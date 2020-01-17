@@ -1,0 +1,160 @@
+﻿@using Alithea2.Models
+@model IEnumerable<Alithea2.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var totalPage = ((int?) ViewBag.TotalPage).Value;
+    var currentPage = ((int?) ViewBag.CurrentPage).Value;
+    var limit = ((int?) ViewBag.Limit).Value;
+
+    int indexSo = (currentPage-1)*limit + 1;
+}
+
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <h4 class="card-title">Sản phẩm</h4>
+                    <p class="card-description d-sm-flex">
+                        <br class="d-sm-none" />
+
+                        <a class="btn btn-sm btn-primary ml-auto mr-2 mt-2 mt-sm-0" href="@Url.Action("Create", "Products")">
+                            Thêm sản phẩm mới<span class="mdi mdi-plus-circle"></span>
+                        </a>
+                    </p>
+                    <table class="table" id="update-student">
+                        <thead class="text-primary">
+                            <tr>
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RoleNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductName)
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    @Html.DisplayNameFor(model => model.ProductImage)
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    @Html.DisplayNameFor(model => model.UnitPrice)
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    @Html.DisplayNameFor(model => model.Quantity)
+                                </th>
+                                <th class="d-none d-xl-table-cell">
+                                    @Html.DisplayNameFor(model => model.UpdatedAt)
+                                </th>
+                                <th class="text-center d-none d-lg-table-cell">
+                                    @Html.DisplayNameFor(model => model.Status)
+                                </th>
+                                <th class="text-center d-none d-lg-table-cell">
+                                    Sửa
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td>
+                                        <b class="text-small">@indexSo</b>
+                                    </td>
+                                    <td>
+                                        <a href="/Products/Details/@Html.DisplayFor(model => item.ProductID)" class="badge w-100 badge-gradient-primary w-100">
+                                            @Html.DisplayFor(modelItem => item.RoleNumber)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <b class="text-small">@Html.DisplayFor(modelItem => item.ProductName)</b>
+                                    </td>
+                                    <td class="text-center d-none d-xl-table-cell">
+                                        <img src="@Html.DisplayFor(modelItem => item.ProductImage)" width="100px" height="120px" />
+                                    </td>
+                                    <td>
+                                        <b class="text-small">@Html.DisplayFor(modelItem => item.UnitPrice)</b>
+                                    </td>
+                                    <td>
+                                        <b class="text-small">@Html.DisplayFor(modelItem => item.Quantity)</b>
+                                    </td>
+                                    <td>
+                                        <b class="text-small">@Html.DisplayFor(modelItem => item.UpdatedAt)</b>
+                                    </td>
+                                    <td class="d-none d-xl-table-cell ">
+                                        <a class="badge w-100 @(item.Status == Product.ProductStatus.Active ? "badge-gradient-primary" : "badge-gradient-secondary")">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </a>
+                                    </td>
+                                    <td class="text-center d-none d-lg-table-cell">
+                                        <a class="badge badge-warning" href="@Url.Action("Edit", "Products", new {id = item.ProductID})">
+                                            <span class="mdi mdi-pencil-box-outline"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                {
+                                    indexSo++;
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                    @if (totalPage > 1)
+                    {
+                        <nav aria-label="Page navigation" style="margin-top: 20px;">
+                            <ul class="pagination">
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1&limit=@(limit)" aria-label="First">
+                                            Đầu
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(currentPage-1)&limit=@(limit)" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (currentPage > 2)
+                                {
+                                    <li class="page-item"><a class="page-link" href="?page=@(currentPage-2)&limit=@(limit)">@(currentPage - 2)</a></li>
+                                }
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item"><a class="page-link" href="?page=@(currentPage-1)&limit=@(limit)">@(currentPage - 1)</a></li>
+                                }
+                                <li class="active page-item"><a class="page-link" href="?page=@(currentPage)&limit=@(limit)">@currentPage</a></li>
+                                @if (totalPage - currentPage > 0)
+                                {
+                                    <li class="page-item"><a class="page-link" href="?page=@(currentPage+1)&limit=@(limit)">@(currentPage + 1)</a></li>
+                                }
+                                @if (totalPage - currentPage > 1)
+                                {
+                                    <li class="page-item"><a class="page-link" href="?page=@(currentPage+2)&limit=@(limit)">@(currentPage + 2)</a></li>
+                                }
+                                @if (currentPage < totalPage)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(currentPage+1)&limit=@(limit)" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@totalPage&limit=@(limit)" aria-label="Next">
+                                            Cuối
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>

@@ -1,0 +1,276 @@
+﻿@using Alithea2.Models
+
+@{
+    ViewBag.Title = "Filter";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    List<Category> listCategories = new List<Category>();
+    List<ProductCategory> listProductCategories = new List<ProductCategory>();
+    List<Category> categoryFilter = null;
+    List<Product> listProducts = new List<Product>();
+    if (ViewBag.listCategories != null)
+    {
+        listCategories = ViewBag.listCategories as List<Category>;
+    }
+    if (ViewBag.listProductCategories != null)
+    {
+        listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
+    }
+    if (ViewBag.categoryFilter != null)
+    {
+        categoryFilter = ViewBag.categoryFilter;
+    }
+    if (ViewBag.searchProduct != null)
+    {
+        listProducts = ViewBag.searchProduct as List<Product>;
+    }
+
+    string priceFilter = null;
+    if (ViewBag.PriceFilter != null)
+    {
+        priceFilter = ViewBag.PriceFilter;
+    }
+}
+    <div class="detail12">
+        <div class="container">
+            <div class="row">
+                <div class="nav-detail col-sm-12 wow bounceInLeft" data-wow-delay="0.1s">
+                    <nav aria-label="breadcrumb col-sm-6">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="/Home/ListCategory">Danh mục</a></li>
+                            @if (categoryFilter != null)
+                            {
+                                for (int i = 0; i < categoryFilter.Count; i++)
+                                {
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        @categoryFilter[i].CategoryName
+                                    </li>
+                                }
+                            }
+                        </ol>
+
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Giá</a></li>
+
+                            @if (priceFilter != null)
+                            {
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    @priceFilter
+                                </li>
+                            }
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-sm-3 ">
+                @using (Html.BeginForm("Filter", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 block1 box">
+                            <p class="wow bounceIn" data-wow-delay="0.1">
+                                Tìm theo giá
+                            </p>
+                            <hr>
+                            <div class="block1">
+                                <ul>
+                                    <li class="wow bounceIn" data-wow-delay="0.2">
+                                        <input class="inputcheck" id="checkbox1" name="price" type="radio"
+                                               value="1" style="display: none;" />
+                                        <label class="checkbox" for="checkbox1">
+                                            <span>
+                                                <div width="12px" height="10px"></div>
+                                            </span>
+                                            <span>
+                                                <= 150.000đ
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <hr>
+                                    <li class="wow bounceIn" data-wow-delay="0.3">
+                                        <input class="inputcheck" id="checkbox2" name="price" value="2" type="radio"
+                                               style="display: none;" />
+                                        <label class="checkbox" for="checkbox2">
+                                            <span>
+                                                <div width="12px" height="10px">
+
+                                                </div>
+                                            </span>
+                                            <span>150.000 đ - 500.000 đ</span>
+                                        </label>
+
+                                    </li>
+                                    <hr>
+                                    <li class="wow bounceIn" data-wow-delay="0.4">
+                                        <input class="inputcheck" id="checkbox3" type="radio" name="price"
+                                               value="3" style="display: none;" />
+                                        <label class="checkbox" for="checkbox3">
+                                            <span>
+                                                <div width="12px" height="10px">
+                                                </div>
+                                            </span>
+                                            <span>500.000 đ - 1.000.000 đ</span>
+                                        </label>
+                                    </li>
+                                    <hr>
+                                    <li class="wow bounceIn" data-wow-delay="0.5">
+                                        <input class="inputcheck" id="checkbox4" name="price" value="4" type="radio"
+                                               style="display: none;" />
+                                        <label class="checkbox" for="checkbox4">
+                                            <span>
+                                                <div width="12px" height="10px">
+
+                                                </div>
+                                            </span>
+                                            <span> > 1000.000 đ</span>
+                                        </label>
+                                    </li>
+                                    <hr>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 block1 box">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1" class="wow bounceIn" data-wow-delay="0.2">
+                                    Chọn danh mục
+                                </label>
+                                <select class="form-control wow bounceIn" data-wow-delay="0.3" name="selectpicker" id="exampleFormControlSelect1">
+                                    <option value="0">
+                                        Danh mục
+                                    </option>
+                                    @if (listCategories != null && listCategories.Count > 0)
+                                    {
+                                        for (int i = 0; i < listCategories.Count; i++)
+                                        {
+                                            <option value="@listCategories[i].CategoryID">
+                                                @listCategories[i].CategoryName
+                                            </option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+                            <div class="col-md-10" id="listCat">
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 m-b-30 wow bounceIn" data-wow-delay="0.2">
+                            <div class="form-group">
+                                <div class="row">
+                                    <button type="submit" class="btn btn-primary btn-block kieu2">Lọc</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                }
+                </div>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                @if (listProductCategories != null && listProductCategories.Count > 0)
+                                {
+                                    for (int i = 0; i < listProductCategories.Count; i++)
+                                    {
+                                        <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
+                                            <a href="#">
+                                                <div class="card col-sm-12 box a-product" style="width: 18rem;">
+                                                    <div class="card-img">
+                                                        <img src="@listProductCategories[i].Product.ProductImage" class="card-img-top" alt="...">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card-body">
+                                                            <p class="card-title text-center">
+                                                                @listProductCategories[i].Product.ProductName
+                                                            </p>
+                                                            <div class="card-text text-center">
+                                                                <p>
+                                                                    <strong class="price-zone">
+                                                                    @string.Format("{0:C}", listProductCategories[i].Product.UnitPrice)
+
+                                                                    </strong>
+                                                                </p>
+                                                            </div>
+                                                            <div class="row text-center col-md-6 offset-md-3">
+                                                                <a href="/Home/Details/@listProductCategories[i].ProductID">
+                                                                    <button type="submit" class="btn btn-primary kieu2 col-sm-12">
+                                                                       Đặt hàng
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                                @if (listProducts != null && listProducts.Count > 0)
+                                {
+                                    for (int i = 0; i < listProducts.Count; i++)
+                                    {
+                                        <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
+                                            <a href="#">
+                                                <div class="card col-sm-12 box a-product" style="width: 18rem;">
+                                                    <div class="card-img">
+                                                        <img src="@listProducts[i].ProductImage" class="card-img-top" alt="...">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card-body">
+                                                            <p class="card-title text-center">
+                                                                @listProducts[i].ProductName
+                                                            </p>
+                                                            <div class="card-text text-center">
+                                                                <p>
+                                                                    <strong class="price-zone">
+                                                                        @string.Format("{0:C}", listProducts[i].UnitPrice)
+                                                                    </strong>
+                                                                </p>
+                                                            </div>
+                                                            <div class="row text-center col-md-6 offset-md-3">
+                                                                <a href="/Home/Details/@listProducts[i].ProductID">
+                                                                    <button type="submit" class="btn btn-primary kieu2 col-sm-12">
+                                                                        Đặt hàng
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+    </div>
+    </div>
+    @section Scripts {
+        <script>
+            function delCate(item) {
+                var idDiv = "#item-" + item;
+                $(idDiv).remove();
+            }
+
+            $(document).ready(function () {
+                console.log("lalal");
+                $("#exampleFormControlSelect1").change(function () {
+                    console.log($(this).val() + " - " + $("#exampleFormControlSelect1 option:selected").text());
+                    console.log($("#listCat").text().includes($("#exampleFormControlSelect1 option:selected").text()));
+                    console.log($("#exampleFormControlSelect1 option:selected").text());
+                    console.log($(this).val());
+                    console.log($(this).val() > 0);
+                    if ($(this).val() > 0) {
+                        var text = '<div class="badge badge-info" id="item-' + $(this).val() + '"><input type="hidden" name="idCat" value="' + $(this).val() + '" />' + $("#exampleFormControlSelect1 option:selected").text() + '<span class="glyphicon glyphicon-remove" onclick="delCate(' + $(this).val() + ')" style="margin-left: 10px;">X</span></div>';
+                        $("#listCat").append(text);
+                    }
+                });
+            });
+        </script>
+    }

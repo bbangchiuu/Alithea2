@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Success";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+    <div class="detail8">
+        <div class="container m-t-150">
+            @if (TempData["Success"] != null)
+            {
+                <h2 class="text-center title-block wow bounceIn text-success" data-wow-delay="0.1s" data-wow-offset="50">
+                    @TempData["Success"]
+                </h2>
+                <p class="text-center"><b>Đơn hàng của bạn đang được chuẩn bị</b></p>
+                <p class="text-center"><b>Hãy kiểm tra Email: @TempData["Email"] của bạn</b></p>
+            }
+            <div class="row mb-3">
+                <div class="col-sm-12 m-t-50 dsxacnhanorder">
+                    <div class="dsxacnhanorder-list float-left divfirst daxacnhanorder">
+                        <a href="/BuyItem/Index">1.Sản phẩm đã chọn</a>
+                    </div>
+                    <!-- <div class="muitenxn muiten1 float-left"></div> -->
+                    <div class="dsxacnhanorder-list float-left daxacnhanorder">
+                        <a href="/BuyItem/ThongTinKhacHang">2.Thông tin giao hàng</a>
+                    </div>
+                    <!-- <div class="right-triangle muiten2 float-left"></div> -->
+                    <div class="dsxacnhanorder-list float-left daxacnhanorder">
+                        <a href="/BuyItem/XacNhanDonHang">3.Xác nhận đơn hàng</a>
+                    </div>
+                    <div class="phuorder divlast daxacnhanorder"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <img src="https://i.ytimg.com/vi/U1ipxrA01v0/hqdefault.jpg" style="margin-left: 28%;" />
+                    <p class="text-center" style="margin-top: 50px;"><b>Mã đơn hàng của bạn</b></p>
+                    <button class="btn-success btn" style="margin-left: 45%;">@TempData["RollNumber"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+

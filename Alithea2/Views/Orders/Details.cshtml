@@ -1,0 +1,189 @@
+﻿@using Alithea2.Models
+@model Alithea2.Models.Order
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    List<OrderDetail> listOrderDetails = ViewBag.listOrderDetails as List<OrderDetail>;
+    int indexSo = 1;
+}
+
+<div class="row">
+    <div class="col-lg-6 col-xl-4 grid-margin stretch-card style-detail">
+        <div class="card">
+
+            <div class="card-body">
+                <h5 class="card-title">
+                    <b>ID # @Html.DisplayFor(model => model.OrderID)</b>
+                </h5>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.RoleNumber): </b>
+                    @Html.DisplayFor(model => model.RoleNumber)
+                </p>
+                <p class="card-text">
+                    @if (Model.UserID != null)
+                    {
+                        <b>@Html.DisplayNameFor(model => model.FullName): </b>
+                        <a class="badge-gradient-success badge" href="/UserAccounts/Details/@Html.DisplayFor(model => model.UserID)">
+                            @Html.DisplayFor(model => model.FullName)
+                        </a>
+                    }
+                    else
+                    {
+                        <b>@Html.DisplayNameFor(model => model.FullName): </b>
+                        @Html.DisplayFor(model => model.FullName)
+                    }
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Email): </b>
+                    @Html.DisplayFor(model => model.Email)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Phone): </b>
+                    @Html.DisplayFor(model => model.Phone)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Address): </b>
+                    @Html.DisplayFor(model => model.Address)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Commnet): </b>
+                    @Html.DisplayFor(model => model.Commnet)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.TotalPrice): </b>
+                    @Html.DisplayFor(model => model.TotalPrice)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Quantity): </b>
+                    @Html.DisplayFor(model => model.Quantity)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.OrderDate): </b>
+                    @Html.DisplayFor(model => model.OrderDate)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.ShippedDate): </b>
+                    @Html.DisplayFor(model => model.ShippedDate)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Status): </b>
+                    <span class="badge @(Model.Status == Order.StatusOrder.Finish ? "badge-gradient-primary" : Model.Status == Order.StatusOrder.Proccesing ? "badge-gradient-warning" : "badge-gradient-secondary")">
+                        @Html.DisplayFor(model => model.Status)
+                    </span>
+                </p>
+
+                <div class="d-sm-flex">
+                    @Html.ActionLink("Sửa", "Edit", new { id = Model.OrderID }, new { @class = "btn btn-sm btn-warning mr-3" })
+                    <a class="btn btn-light btn-sm mt-2 mt-sm-0" href="@Url.Action("Index")">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (listOrderDetails != null)
+{
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <h4 class="card-title">Danh sách đơn hàng</h4>
+                    <table class="table" id="update-student">
+                        <thead class="text-primary">
+                            <tr>
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    Sản phẩm
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    Ảnh
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    Số lượng
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    Đợn giá
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    Màu
+                                </th>
+                                <th class="text-center d-none d-xl-table-cell">
+                                    Size
+                                </th>
+                                <th class="text-center d-none d-lg-table-cell">
+                                    Sửa
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in listOrderDetails)
+                            {
+
+                            <tr>
+                                <td>
+                                    <b class="text-small">@indexSo</b>
+                                </td>
+                                <td>
+                                    <a href="/OrderDetails/Details/@Html.DisplayFor(model => item.ID)" class="badge w-100 badge-gradient-primary w-100">
+                                        @Html.DisplayFor(modelItem => item.Product.ProductName)
+                                    </a>
+                                </td>
+                                <td class="text-center d-none d-xl-table-cell">
+                                    <img src="@Html.DisplayFor(modelItem => item.Product.ProductImage)" width="100px" height="120px" />
+                                </td>
+                                <td>
+                                    <b class="text-small">@Html.DisplayFor(modelItem => item.Quantity)</b>
+                                </td>
+                                <td>
+                                    <b class="text-small">@Html.DisplayFor(modelItem => item.UnitPrice)</b>
+                                </td>
+                                <td>
+                                    @if (item.Color == OrderDetail.ColorProduct.color_Blue)
+                                    {
+                                        <button class="badge badge-info">Xanh</button>
+                                    }
+                                    else if (item.Color == OrderDetail.ColorProduct.color_Red)
+                                    {
+                                        <button class="badge badge-danger">Đỏ</button>
+                                    }
+                                    else if (item.Color == OrderDetail.ColorProduct.color_Yellow)
+                                    {
+                                        <button class="badge badge-warning">Vàng</button>
+                                    }
+                                    else if (item.Color == OrderDetail.ColorProduct.color_Green)
+                                    {
+                                        <button class="badge badge-success">Xanh lá cây</button>
+                                    }
+                                    else
+                                    {
+                                        <b class="text-small">Mặc định</b>
+                                    }
+                                </td>
+                                <td>
+                                    <b class="text-small">@Html.DisplayFor(modelItem => item.Size)</b>
+                                </td>
+                                <td class="text-center d-none d-lg-table-cell">
+                                    <a class="badge badge-warning" href="@Url.Action("Edit", "OrderDetails", new {id = item.ID})">
+                                        <span class="mdi mdi-pencil-box-outline"></span>
+                                    </a>
+                                </td>
+                            </tr>
+
+                                {
+                                    indexSo++;
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}

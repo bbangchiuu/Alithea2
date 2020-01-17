@@ -1,0 +1,213 @@
+﻿@model Alithea2.Models.Category
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Dictionary<String, String> errors = new Dictionary<string, string>();
+    if (ViewBag.Errors != null)
+    {
+        errors = ViewBag.Errors as Dictionary<string, string>;
+    }
+}
+
+@* <h2>Edit</h2> *@
+@* *@
+@* *@
+@* @using (Html.BeginForm()) *@
+@* { *@
+@*     @Html.AntiForgeryToken() *@
+@*      *@
+@*     <div class="form-horizontal"> *@
+@*         <h4>Category</h4> *@
+@*         <hr /> *@
+@*         @Html.ValidationSummary(true, "", new { @class = "text-danger" }) *@
+@*         @Html.HiddenFor(model => model.CategoryID) *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.RoleNumber, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.RoleNumber, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.RoleNumber, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.CategoryImage, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.CategoryImage, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.CategoryImage, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.CreatedAt, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.CreatedAt, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.CreatedAt, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.UpdatedAt, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.UpdatedAt, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.UpdatedAt, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.DeletedAt, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EditorFor(model => model.DeletedAt, new { htmlAttributes = new { @class = "form-control" } }) *@
+@*                 @Html.ValidationMessageFor(model => model.DeletedAt, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" }) *@
+@*             <div class="col-md-10"> *@
+@*                 @Html.EnumDropDownListFor(model => model.Status, htmlAttributes: new { @class = "form-control" }) *@
+@*                 @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" }) *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <div class="form-group"> *@
+@*             <div class="col-md-offset-2 col-md-10"> *@
+@*                 <input type="submit" value="Save" class="btn btn-default" /> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* } *@
+
+<div class="row">
+    <div class="col-md-8 mx-auto grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                @if (TempData["Error"] != null)
+                {
+                    <h4 class="text-danger">@TempData["Error"]</h4>
+                }
+                <h4 class="card-title">Category</h4>
+                <p class="card-description">Edit Category</p>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.CategoryID)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoleNumber)
+                        @Html.EditorFor(model => model.RoleNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.RoleNumber, errors.ContainsKey("CategoryName") ? errors["CategoryName"] : "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CategoryName)
+                        @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CategoryName, errors.ContainsKey("CategoryName") ? errors["CategoryName"] : "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CategoryDescription)
+                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CategoryDescription, errors.ContainsKey("CategoryDescription") ? errors["CategoryDescription"] : "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <img id="preview" src="@Html.DisplayFor(model => model.CategoryImage)" class="img-thumbnail" style="width: 100px" alt="Alternate Text" />
+                        <div style="margin-top: 20px;">
+                            @Html.LabelFor(model => model.CategoryImage, "Ảnh mới")
+                            @Html.EditorFor(model => model.CategoryImage, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+                            @Html.ValidationMessageFor(model => model.CategoryImage, errors.ContainsKey("CategoryImage") ? errors["CategoryImage"] : "", new { @class = "text-danger" })
+                            <div style="margin-top: 5px">
+                                <button type="button" id="upload_widget" class="btn btn-primary">Tải ảnh lên</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        @Html.LabelFor(model => model.CreatedAt, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @* <input type="date" class = "form-control" name="datepicker" value="@string.Format("{0:yyyy-MM-dd}", Model.CreatedAt)"/> *@
+                            @Html.EditorFor(model => model.CreatedAt, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                            @Html.ValidationMessageFor(model => model.CreatedAt, "", new { @class = "text-danger" })
+                            @* <input type="text" name="birthday" value="@Model.CreatedAt.Date" /> *@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Status)
+                        @Html.EnumDropDownListFor(model => model.Status, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                    </div>
+                    <input type="submit" class="btn btn-gradient-primary mr-2" value="Cập nhật" />
+                    <button type="button" class="btn btn-gradient-danger mr-3" data-toggle="modal" data-target="#myModal">
+                        Xóa danh mục
+                    </button>
+                    <a class="btn btn-light" href="@Url.Action("Index")">
+                        Hủy
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Xóa?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                Sản phẩm của Danh mục này sẽ bị xóa hết. Bạn có chắc chắn
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                @using (Html.BeginForm("Delete/" + Model.CategoryID, "Categories", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="submit" value="Có" class="btn btn-default btn btn-danger" />
+                }
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Không</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+    var myWidget = cloudinary.createUploadWidget({
+            cloudName: 'bangnguyen',
+            uploadPreset: 'Alithea'}, (error, result) => {
+            if (!error && result && result.event === "success") {
+                var imgLink = result.info.secure_url;
+                document.querySelector("input[name='CategoryImage']").value = imgLink;
+                var imgPreview = document.getElementById("preview");
+                imgPreview.src = imgLink;
+                imgPreview.classList.remove("hidden");
+            }
+        }
+    )
+
+    document.getElementById("upload_widget").addEventListener("click", function(){
+        myWidget.open();
+    }, false);</script>
+}

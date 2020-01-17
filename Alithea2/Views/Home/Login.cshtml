@@ -1,0 +1,57 @@
+﻿@model Alithea2.Models.UserAccount
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    Dictionary<String, String> errors = new Dictionary<string, string>();
+    if (ViewBag.Errors != null)
+    {
+        errors = ViewBag.Errors as Dictionary<string, string>;
+    }
+}
+<div class="bgr">
+
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="row">
+                    @if (errors.ContainsKey("ErrorLogin"))
+                    {
+                        <div class="alert alert-danger text-center wow bounceIn col-sm-12 " role="alert">
+                            <strong>
+                                @errors["ErrorLogin"]
+                            </strong>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-6 login-form-2 offset-md-3 wow bounceIn" data-wow-delay="0.1s">
+
+                <h3>Đăng nhập</h3>
+                @using (Html.BeginForm("Login", "Home", FormMethod.Post, htmlAttributes: new { @class = "col-sm-12" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <form action="" method="POST">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-5" })
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Tài khoản" } })
+                            @Html.ValidationMessageFor(model => model.Username, errors.ContainsKey("Username") ? errors["Username"] : "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-5" })
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Mật khẩu" } })
+                            @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("Password") ? errors["Password"] : "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btnSubmit" value="Đăng nhập" />
+                        </div>
+                        <div class="form-group">
+                            <a href="/Home/Register" class="btnForgetPwd" value="Login">Tạo tài khoản tại đây</a>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

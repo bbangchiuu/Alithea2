@@ -1,0 +1,117 @@
+@media only screen and (max-width: 767px){
+    .h2-add{
+        font-size: 32px;
+        line-height: 38px;
+        letter-spacing: 0px;
+        margin-bottom: 20px;
+    }
+    .h6-add{
+        font-size: 13px;
+    line-height: 19px;
+    letter-spacing: 2px;
+    }
+    .anhnen{
+        padding-bottom: 600px;
+    }
+    .col-lg-6.text1{
+        margin: 0 0 20px;
+        height: auto!important;
+        width: 100%;
+    }
+    .col-lg-6.text2{
+        margin: 0 0 20px;
+        height: auto!important;
+        width: 100%;
+    }
+
+.h5-add {
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.kieuchu {
+    font-size: 13px;
+    line-height: 19px;
+    margin-top: 20px;
+}
+
+    .khoianh{
+        top: 838px;
+    }
+    .column.mcb-column.two-fifth.column_column{
+        width: 100%;
+    }
+    .diachi{
+        top: 1045px;
+    }
+    .phanduoi{
+        top: 1550px;
+    }
+    .column.mcb-column.three-fifth.column_column{
+        width: 100%;
+        margin: 0 1% 0px;
+    }
+    .column.mcb-column.one.column_divider{
+        width: 98%;
+        float: left;
+        margin: 0 1% 0px;
+    }
+    .column.mcb-column.two-fifth.column_placeholder{
+        width: 100%;
+    float: left;
+    margin: 0 1% 20px;
+    }
+    h1.to{
+        padding-top: 100px;
+    }
+    .contact-left{
+        width: 100%;
+    }
+    .contact-right{
+        width: 100%;
+    }
+    .col-lg-12.giua.text-center{
+        padding-bottom: 920px;
+    }
+    .col-lg-12.cuoicung{
+        margin-top: 10px;
+    }
+    .bando{
+        width: 100%;
+        margin-top: 20px;
+    }
+    .column.one-second{
+        width: 100%;
+    }
+    p.to{
+        font-size: 20px;
+        padding-top: 30px;
+        line-height: 35px;
+    }
+    .omchu1{
+        padding: 40px 0px 0px 0px;
+    }
+    .column.one-second{
+        margin: 0px 1% 40px;
+    }
+    .left-2{
+        padding-left: 0px;
+    }
+    .col-lg-12.giua2{
+        padding-top: 40px;
+    padding-bottom: 860px;
+    }
+    .col-lg-12.giua1{
+        padding-bottom: 863px;
+    }
+    .col-lg-12.giua3{
+        padding-bottom: 910px;
+    }
+    .contact-left{
+        margin: 0px;
+    }
+    .omchu2{
+        padding: 0px;
+    }
+}

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Alithea2.Models.Category>
+
+@{
+    ViewBag.Title = "ListCategory";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+@* <h2>ListCategory</h2> *@
+@* *@
+@* <table class="table"> *@
+@*     <tr> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.RoleNumber) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.CategoryName) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.CategoryDescription) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.CategoryImage) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.CreatedAt) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.UpdatedAt) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.DeletedAt) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.Status) *@
+@*         </th> *@
+@*         <th></th> *@
+@*     </tr> *@
+@* *@
+@* @foreach (var item in Model) { *@
+@*     <tr> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.RoleNumber) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.CategoryName) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.CategoryDescription) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.CategoryImage) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.CreatedAt) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.UpdatedAt) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.DeletedAt) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.DisplayFor(modelItem => item.Status) *@
+@*         </td> *@
+@*         <td> *@
+@*             @Html.ActionLink("Edit", "Edit", new { id=item.CategoryID }) | *@
+@*             @Html.ActionLink("Details", "Details", new { id=item.CategoryID }) | *@
+@*             @Html.ActionLink("Delete", "Delete", new { id=item.CategoryID }) *@
+@*         </td> *@
+@*     </tr> *@
+@* } *@
+@* *@
+@* </table> *@
+<div class="detail12">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12" style="margin-left: 5%">
+                        <div class="row">
+                            @foreach(var item in Model)
+                                {
+                                    <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
+                                        <a href="/Home/Filter/@item.CategoryID">
+                                            <div class="card col-sm-12 box a-product" style="width: 18rem;">
+                                                <div class="card-img">
+                                                    <img src="@item.CategoryImage" class="card-img-top" style="height: 290px;" alt="...">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card-body">
+                                                        <p class="card-title text-center">
+                                                            @item.CategoryName
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

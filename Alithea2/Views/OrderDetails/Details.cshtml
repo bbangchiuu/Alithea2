@@ -1,0 +1,57 @@
+﻿@model Alithea2.Models.OrderDetail
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+    <div class="row">
+        <div class="col-lg-6 col-xl-4 grid-margin stretch-card style-detail">
+            <div class="card">
+                <div class="card-img-top text-center pt-3">
+                    <img class="border-primary" src="@Html.DisplayFor(model => model.Product.ProductImage)"
+                         style="max-width: 100%; max-height: 180px; padding: 4px; border: 2px solid; border-radius: 100%" alt="Avatar" />
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <b>ID # @Html.DisplayFor(model => model.ID)</b>
+                    </h5>
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.Order.RoleNumber): </b>
+                        <a href="@Url.Action("Details", "Products", new {id = Model.OrderID})" class="badge badge-gradient-success">
+                            @Html.DisplayFor(model => model.Order.RoleNumber)
+                        </a>
+                    </p>
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.Product.ProductName): </b>
+                        <a href="@Url.Action("Details", "Products", new {id = Model.ProductID})" class="badge badge-gradient-success">
+                            @Html.DisplayFor(model => model.Product.ProductName)
+                        </a>
+                    </p>
+
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.UnitPrice): </b>
+                        @Html.DisplayFor(model => model.UnitPrice)
+                    </p>
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.Quantity): </b>
+                        @Html.DisplayFor(model => model.Quantity)
+                    </p>
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.Color): </b>
+                        @Html.DisplayFor(model => model.Color)
+                    </p>
+                    <p class="card-text">
+                        <b>@Html.DisplayNameFor(model => model.Size): </b>
+                        @Html.DisplayFor(model => model.Size)
+                    </p>
+                    <div class="d-sm-flex">
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-sm btn-warning mr-3" })
+                        <a class="btn btn-light btn-sm mt-2 mt-sm-0" href="@Url.Action("Index")">
+                            Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

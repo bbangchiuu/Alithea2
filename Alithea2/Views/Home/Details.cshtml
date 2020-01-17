@@ -1,0 +1,157 @@
+﻿@using Alithea2.Models
+@model Alithea2.Models.Product
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    List<ProductCategory> listProductCategories = new List<ProductCategory>();
+    if (ViewBag.listProductCategories != null)
+    {
+        listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
+    }
+}
+
+<div class="detail11">
+    <div class="container">
+    </div>
+    <section class="section detail-product">
+        <div class="container w-7">
+            <div class="row">
+                <div class="nav-detail col-sm-12 wow bounceInLeft" data-wow-delay="0.1s">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                @Html.DisplayFor(model => model.ProductName)
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="bock-img-sp col-sm-6">
+                    <div class="with-100">
+                        <div class="top-thumbnail box wow bounceInLeft" data-wow-delay="0.2s">
+                            @* <img src="~/Content/public/images/trai.jpg" class="nut-trai" alt=""> *@
+                            <img src="@Html.DisplayFor(model => model.ProductImage)" class="anh-thumbnail" alt="">
+                            @* <img src="~/Content/public/images/phai.jpg" class="nut-phai" alt=""> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 pull-right gt_sanpham">
+                    <p class="tieude wow bounceInRight" data-wow-delay="0.2s">
+                        @Html.DisplayFor(model => model.ProductName)
+                    </p>
+                    <div class="price wow bounceInRight" data-wow-delay="0.3s">
+                        <div class="row">
+                            <p class="col-sm-12">
+                                <strong>Đơn giá:</strong>
+                                @Html.DisplayFor(model => model.UnitPrice)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="price wow bounceInRight" data-wow-delay="0.3s">
+                        <div class="row">
+                            <p class="col-sm-12">
+                                <strong>Danh mục:</strong>
+                                @if (listProductCategories != null)
+                                {
+                                    for (int i = 0; i < listProductCategories.Count; i++)
+                                    {
+                                        <a href="/Home/Filter/@listProductCategories[i].CategoryID" style="color: white" class="badge badge-info">@listProductCategories[i].Category.CategoryName</a>
+                                    }
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row m-top-30 wow bounceInRight" data-wow-delay="0.5s">
+                        <div class="col-sm-12 col-sm-offset-4">
+                            <div class="row">
+                                <p class="col-sm-3"><strong>Số lượng:</strong> </p>
+                                <div class="input-group col-sm-5 mb-3">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-light btn-sm" id="minus-btn"><i class="fa fa-minus"></i></button>
+                                    </div>
+                                    <input type="number" id="qty_input" class="form-control form-control-sm" value="1"
+                                           min="1">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-light btn-sm" id="plus-btn"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-top-30 wow bounceInRight" data-wow-delay="0.6s">
+                        <div class="col-sm-12 col-sm-offset-4">
+                            <div class="row">
+                                <p class="col-sm-3"><strong>Color:</strong></p>
+                                <div class="input-group col-sm-8 mb-3">
+                                    <div class="custom-radios">
+                                        <div>
+                                            <input type="radio" id="color-1" name="color_pro" value="5">
+                                            <label for="color-1">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="color-2" name="color_pro" value="3">
+                                            <label for="color-2">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="color-3" name="color_pro" value="4">
+                                            <label for="color-3">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="color-4" name="color_pro" value="2">
+                                            <label for="color-4">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-top-30 wow bounceInRight" data-wow-delay="0.8s">
+                        <div class="col-sm-12 col-sm-offset-4">
+                            <div class="row">
+                                <p class="col-sm-12 j-center">
+                                    <strong>Size: </strong>
+                                    <select id="pro_size" class="form-control">
+                                        <option value="0">L</option>
+                                        <option value="1">M</option>
+                                        <option value="2">XL</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-top-30 wow bounceInRight" data-wow-delay="0.8s">
+                        <div class="col-sm-12 col-sm-offset-4">
+                            <div class="row">
+                                <p class="col-sm-12 j-center">
+                                    <strong>Mô tả:</strong>
+                                    @Html.DisplayFor(model => model.ProductDescription)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-top-30">
+                        <div class="col-sm-12 col-sm-offset-4">
+                            <div class="input-group col-sm-8 mb-3">
+                                <div class="row">
+                                    <input type="hidden" value="@Html.DisplayFor(model => model.ProductID)" id="pro_id" />
+                                    <button class="btn btn-danger add-to-cart wow bounceInRight" data-wow-delay="0.2s" id="addItem">
+                                        <i class="fa fa-cart-plus"></i> Thêm vào giỏ hàng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

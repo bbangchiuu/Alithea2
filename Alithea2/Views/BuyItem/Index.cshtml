@@ -1,0 +1,132 @@
+﻿@using Alithea2.Models
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    List<Product> listProducts = new List<Product>();
+    if (Session["buyItem"] != null)
+    {
+        listProducts = Session["buyItem"] as List<Product>;
+    }
+}
+
+<div class="detail8">
+    <div class="container m-t-150">
+        @if (TempData["Error"] != null)
+        {
+            <h2 class="text-center title-block wow bounceIn text-danger" data-wow-delay="0.1s" data-wow-offset="50">
+                @TempData["Error"]
+            </h2>
+        }
+        <div class="row mb-3">
+            <div class="col-sm-12 m-t-50 dsxacnhanorder">
+                <div class="dsxacnhanorder-list float-left divfirst">
+                    <a href="/BuyItem/Index">1.Sản phẩm đã chọn</a>
+                </div>
+                <!-- <div class="muitenxn muiten1 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left">
+                    <a href="/BuyItem/ThongTinKhacHang">2.Thông tin giao hàng</a>
+                </div>
+                <!-- <div class="right-triangle muiten2 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left">
+                    <a href="/BuyItem/XacNhanDonHang">3.Xác nhận đơn hàng</a>
+                </div>
+                <div class="phuorder divlast"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                @if (listProducts != null && listProducts.Count > 0)
+                {
+                    <table class="table table-hover box">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Ảnh</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Đơn giá</th>
+                                <th scope="col">Màu</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < listProducts.Count; i++)
+                            {
+                            <tr>
+                                <td>
+                                    <a href="">@listProducts[i].ProductName</a>
+                                </td>
+                                <td>
+                                    <a href="#">
+                                        <img src="@listProducts[i].ProductImage" width="100px">
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="input-group col-sm-5">
+
+                                        <div class="input-group-prepend float-left">
+                                            <div class="btn btn-light btn-sm minus-btn"><a href="/BuyItem/UpdateQuantity?pro_id=@listProducts[i].ProductID&quantity=-1&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)"><i class="fa fa-minus"></i></a></div>
+                                        </div>
+                                        <input style="width: 30px;" class="form-control form-control-sm qty_input float-left" value="@listProducts[i].Quantity">
+                                        @* <input type="number" class="form-control form-control-sm qty_input" value="@val.Quantity"> *@
+                                        <div class="input-group-prepend float-left">
+                                            <div class="btn btn-light btn-sm plus-btn"><a href="/BuyItem/UpdateQuantity?pro_id=@listProducts[i].ProductID&quantity=1&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)"><i class="fa fa-plus"></i></a></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                @string.Format("{0:C}", @listProducts[i].UnitPrice )
+
+                                </td>
+                                <td>
+                                    @if (listProducts[i].Color == Product.ColorProduct.color_Green)
+                                    {
+                                        <button type="button" class="btn btn-success">Xanh lá cây</button>
+                                    }
+                                    else if (listProducts[i].Color == Product.ColorProduct.color_Blue)
+                                    {
+                                        <button type="button" class="btn btn-primary">Xanh</button>
+                                    }
+                                    else if (listProducts[i].Color == Product.ColorProduct.color_Yellow)
+                                    {
+                                        <button type="button" class="btn btn-warning">Vàng</button>
+                                    }
+                                    else if (listProducts[i].Color == Product.ColorProduct.color_Red)
+                                    {
+                                        <button type="button" class="btn btn-danger">Đỏ</button>
+                                    }
+                                    else
+                                    {
+                                        <strong>Mặc định</strong>
+                                    }
+                                </td>
+                                <td>
+                                    @listProducts[i].Size
+                                </td>
+                                <td>
+                                    <a class="delete-user" href="/BuyItem/Delete_order?pro_id=@listProducts[i].ProductID&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)">
+                                        <i class="fa fa-trash-alt list-users" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <p class="sangbenphai" style="color: white">
+                        <a href="/buyItem/ThongTinKhacHang" class="btn btn-success btn-block t-30 nut-checkout" name="dathang">Đặt hàng</a>
+                    </p>
+                    <p class="sangbenphai" id="total_price">
+                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: @string.Format("{0:C}", @Session["TotalPrice"] )</a>
+                    </p>
+                }
+                else
+                {
+                    <button type="button" name="" id="" class="btn btn-danger m-t-150"><a href="/Home">Bạn chưa mua sản phẩm nào</a></button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

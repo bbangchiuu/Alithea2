@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+@using (Html.BeginForm("SendEmail", "Email", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <p>Name</p>
+    <input type="text" name="_name" class="form-control" />
+    <br />
+    <p>Email</p>
+    <input type="email" name="_email" class="form-control" />
+    <br />
+    <p>Phone</p>
+    <input type="text" name="_phone" class="form-control" />
+    <br />
+    <p>Description</p>
+    <input type="text" name="_description" class="form-control" />
+    <br />
+    <input type="submit" value="gui thu" />
+}

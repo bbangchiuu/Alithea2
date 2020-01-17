@@ -1,0 +1,166 @@
+﻿@using Alithea2.Models
+@model Alithea2.Models.Product
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    List<ProductCategory> listProductCategories = ViewBag.listCat as List<ProductCategory>;
+}
+
+@* <h2>Details</h2> *@
+@* *@
+@* <div> *@
+@*     <h4>Product</h4> *@
+@*     <hr /> *@
+@*     <dl class="dl-horizontal"> *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.RoleNumber) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.RoleNumber) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.ProductName) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.ProductName) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.ProductDescription) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.ProductDescription) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.UnitPrice) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.UnitPrice) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.Quantity) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.Quantity) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.ProductImage) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.ProductImage) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.CreatedAt) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.CreatedAt) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.UpdatedAt) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.UpdatedAt) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.DeletedAt) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.DeletedAt) *@
+@*         </dd> *@
+@* *@
+@*         <dt> *@
+@*             @Html.DisplayNameFor(model => model.Status) *@
+@*         </dt> *@
+@* *@
+@*         <dd> *@
+@*             @Html.DisplayFor(model => model.Status) *@
+@*         </dd> *@
+@* *@
+@*     </dl> *@
+@* </div> *@
+@* <div> *@
+@*     <p>Category: </p> *@
+@*     @foreach (var item in listProductCategories) *@
+@*     { *@
+@*         <p>@item.Category.RoleNumber</p> *@
+@*     } *@
+@* </div> *@
+@* <p> *@
+@*     @Html.ActionLink("Edit", "Edit", new { id = Model.ProductID }) | *@
+@*     @Html.ActionLink("Back to List", "Index") *@
+@* </p> *@
+
+<div class="row">
+    <div class="col-lg-6 col-xl-4 grid-margin stretch-card style-detail">
+        <div class="card">
+            <div class="card-img-top text-center pt-3">
+                <img class="border-primary" src="@Html.DisplayFor(model => model.ProductImage)"
+                     style="max-width: 100%; max-height: 180px; padding: 4px; border: 2px solid; border-radius: 100%" alt="Avatar" />
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <b>ID # @Html.DisplayFor(model => model.ProductID)</b>
+                </h5>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.ProductName): </b>
+                    @Html.DisplayFor(model => model.ProductName)
+                </p>
+                <p class="card-text">
+                    <b>Danh mục: </b>
+                    @for (int i = 0; i < listProductCategories.Count; i++)
+                    {
+                        <a href="@Url.Action("Details", "Categories", new {id = listProductCategories[i].CategoryID})" class="badge badge-info">
+                            @listProductCategories[i].Category.CategoryName
+                        </a>
+                    }
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.ProductDescription): </b>
+                    @Html.DisplayFor(model => model.ProductDescription)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.CreatedAt): </b>
+                    @Html.DisplayFor(model => model.CreatedAt)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.UnitPrice): </b>
+                    @Html.DisplayFor(model => model.UnitPrice)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Quantity): </b>
+                    @Html.DisplayFor(model => model.Quantity)
+                </p>
+                <p class="card-text">
+                    <b>@Html.DisplayNameFor(model => model.Status): </b>
+                    <span class="badge @(Model.Status == Product.ProductStatus.DeActive ? "badge-gradient-secondary" : "badge-gradient-primary")">
+                        @Html.DisplayFor(model => model.Status)
+                    </span>
+                </p>
+
+                <div class="d-sm-flex">
+                    @Html.ActionLink("Sửa", "Edit", new { id = Model.ProductID }, new { @class = "btn btn-sm btn-warning mr-3" })
+                    <a class="btn btn-light btn-sm mt-2 mt-sm-0" href="@Url.Action("Index")">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

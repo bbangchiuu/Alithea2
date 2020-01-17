@@ -1,0 +1,67 @@
+﻿@using Alithea2.Models
+@model Alithea2.Models.Customer
+@{
+    ViewBag.Title = "ThongTinKhacHang";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    Dictionary<string, string> errors = new Dictionary<string, string>();
+    if (ViewBag.errors != null)
+    {
+        errors = ViewBag.errors;
+    }
+}
+
+<div class="detail8">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-sm-12 m-t-150 dsxacnhanorder">
+                <div class="dsxacnhanorder-list float-left daxacnhanorder divfirst">
+                    <a href="/BuyItem/Index">1.Sản phẩm đã chọn</a>
+                </div>
+                <!-- <div class="muitenxn muiten1 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left">
+                    <a href="/BuyItem/ThongTinKhacHang">2.Thông tin giao hàng</a>
+                </div>
+                <!-- <div class="right-triangle muiten2 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left">
+                    <a href="/BuyItem/XacNhanDonHang">3.Xác nhận đơn hàng</a>
+                </div>
+                <div class="phuorder divlast"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 thongtinkh-list">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="thongtinkh mb-3">
+                        @Html.LabelFor(model => model.FullName)
+                        @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" }})
+                        @Html.ValidationMessageFor(model => model.FullName, errors.ContainsKey("FullName") ? errors["FullName"] : "", new { @class = "text-danger" })
+                    </div>
+                    <div class="thongtinkh mb-3">
+                        @Html.LabelFor(model => model.Email)
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" }})
+                        @Html.ValidationMessageFor(model => model.Email, errors.ContainsKey("Email") ? errors["Email"] : "", new { @class = "text-danger", @type = "email" })
+                    </div>
+                    <div class="thongtinkh mb-3">
+                        @Html.LabelFor(model => model.Address)
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" }})
+                        @Html.ValidationMessageFor(model => model.Address, errors.ContainsKey("Address") ? errors["Address"] : "", new { @class = "text-danger" })
+                    </div>
+                    <input type="hidden" name="" id="test" value="day la test">
+                    <div class="thongtinkh mb-3">
+                        @Html.LabelFor(model => model.Phone)
+                        @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" }})
+                        @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("Phone") ? errors["Phone"] : "", new { @class = "text-danger" })
+                    </div>
+                   
+                    <div class="thongtinkh mb-3">
+                        <button class="btn btn-success" type="submit" name="submitttkh" onclick="return checkthongtin()">Xác nhận đơn hàng</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/public/javascripts/checkouts.js"></script>
+

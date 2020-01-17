@@ -1,0 +1,90 @@
+﻿@model Alithea2.Models.UserAccount
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    Dictionary<String, String> errors = new Dictionary<string, string>();
+    if (ViewBag.Errors != null)
+    {
+        errors = ViewBag.Errors as Dictionary<string, string>;
+    }
+}
+
+<div class="bgr">
+    <div class="container login-container">
+        <div class="row">
+
+            <div class="col-sm-12 login-form-2 wow bounceIn" data-wow-delay="0.1s">
+                <h3>Đăng ký</h3>
+
+                <div class="col-sm-12">
+                    @if (errors.ContainsKey("ErrorRegister"))
+                    {
+                        <div class="alert alert-danger col-sm-12 text-center" role="alert">
+                            <strong>
+                                @errors["ErrorRegister"]
+                            </strong>
+                        </div>
+                    }
+                </div>
+
+                @using (Html.BeginForm("Register", "Home", FormMethod.Post, htmlAttributes: new { @class = "col-sm-12", @name = "form_register", @id = "FormRegister" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Họ và tên" } })
+                                @Html.ValidationMessageFor(model => model.FullName, errors.ContainsKey("FullName") ? errors["FullName"] : "", new { @class = "text-danger", @id = "validateFullName"})
+                            </div>
+                            <div class="form-group">
+
+                                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Tài khoản" } })
+                                @Html.ValidationMessageFor(model => model.Username, errors.ContainsKey("Username") ? errors["Username"] : "", new { @class = "text-danger", @id = "validateUsername" })
+
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Email", @type = "email" } })
+                                @Html.ValidationMessageFor(model => model.Email, errors.ContainsKey("Email") ? errors["Email"] : "", new { @class = "text-danger", @id = "validateEmail" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BirthDay, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.BirthDay, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Ngày sinh", @type = "date" } })
+                                @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("Birthday") ? errors["Birthday"] : "", new { @class = "text-danger", @id = "validateBirthday" })
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Số điện thoại" } })
+                                @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("Phone") ? errors["Phone"] : "", new { @class = "text-danger", @id = "validatePhone"})
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Địa chỉ" } })
+                                @Html.ValidationMessageFor(model => model.Address, errors.ContainsKey("Address") ? errors["Address"] : "", new { @class = "text-danger", @id = "validateAddress" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @PlaceHolder = "Mật khẩu" } })
+                                @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("Password") ? errors["Password"] : "", new { @class = "text-danger", @id = "validatePassword"})
+                            </div>
+                            <div class="form-group">
+                                <label for="">Nhập lại mật khẩu</label>
+                                <input type="password" name="confirmpassord" id="password2" class="form-control" placeholder="Nhập lại mật khẩu" aria-describedby="helpId">
+                                @Html.ValidationMessageFor(model => model.Phone, errors.ContainsKey("ConfirmPassword") ? errors["ConfirmPassword"] : "", new { @class = "text-danger", @id = "validateConfirmPassword" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" id="register" class="submit-reg btn btn-success btn-block col-sm-6 offset-sm-3" onclick="return checkRegister()">Đăng ký</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

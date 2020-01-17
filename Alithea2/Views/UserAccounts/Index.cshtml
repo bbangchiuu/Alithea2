@@ -1,0 +1,101 @@
+﻿@using Alithea2.Models
+@model IEnumerable<Alithea2.Models.UserAccount>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int indexSo = 1;
+}
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body table-responsive">
+                <h4 class="card-title">List Customer</h4>
+                <p class="card-description d-sm-flex">
+                    <span class="text-muted text-small my-auto">Click customer name to see detail</span>
+                    <br class="d-sm-none" />
+                </p>
+                <table class="table" id="update-student">
+                    <thead class="text-primary">
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Username)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </th>
+                            <th class="">
+                                @Html.DisplayNameFor(model => model.Phone)
+                            </th>
+                            <th class="">
+                                @Html.DisplayNameFor(model => model.CreatAt)
+                            </th>
+                            <th class="">
+                                @Html.DisplayNameFor(model => model.UpdateAt)
+                            </th>
+                            <th class="">
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th class="text-center d-none d-lg-table-cell">
+                                Edit
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+
+                        <tr>
+                            <td>
+                                <b class="text-small">@indexSo</b>
+                            </td>
+
+                            <td>
+                                <a href="/UserAccounts/Details/@Html.DisplayFor(model => item.UserID)" class="badge w-100 badge-gradient-primary w-100">
+                                    @Html.DisplayFor(modelItem => item.Username)
+                                </a>
+                            </td>
+                            <td>
+                                <b class="text-small">@Html.DisplayFor(modelItem => item.Email)</b>
+                            </td>
+                            <td>
+                                <b class="text-small">@Html.DisplayFor(modelItem => item.Address)</b>
+                            </td>
+                            <td>
+                                <b class="text-small">@Html.DisplayFor(modelItem => item.Phone)</b>
+                            </td>
+                            <td>
+                                <b class="text-small">@Html.DisplayFor(modelItem => item.CreatAt)</b>
+                            </td>
+                            <td>
+                                <b class="text-small">@Html.DisplayFor(modelItem => item.UpdateAt)</b>
+                            </td>
+                            <td class="d-none d-xl-table-cell ">
+                                <a class="badge w-100 @(item.Status == UserAccount.UserAccountStatus.Active ? "badge-gradient-primary" : item.Status == UserAccount.UserAccountStatus.DeActive ? "badge-gradient-warning" : "badge-gradient-secondary")">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </a>
+                            </td>
+                            <td class="text-center d-none d-lg-table-cell">
+                                <a class="badge badge-warning" href="@Url.Action("Edit", "UserAccounts", new {id = item.UserID})">
+                                    <span class="mdi mdi-pencil-box-outline"></span>
+                                </a>
+                            </td>
+                        </tr>
+                            {
+                                indexSo++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,57 @@
+@media only screen and (max-width: 991px) and (min-width: 768px){
+    .h2-add{
+        font-size: 44px;
+    line-height: 54px;
+    font-weight: 400;
+    letter-spacing: 0px;
+    }
+    .diachi{
+        top: 680px;
+    }
+    .h5-add{
+        font-size: 15px;
+    line-height: 24px;
+    letter-spacing: 0px;
+    }
+    p.kieuchu{
+        font-size: 14px;
+    }
+    .phanduoi{
+        top: 1200px
+    }
+    .col-lg-12.giua.text-center{
+        background-color: #fbf7ea;
+       padding-bottom: 550px;
+       }
+       h1.to{
+           padding-top: 100px;
+       }
+       p.to2{
+        font-size: 14px;
+    margin: 10px 0px;
+    line-height: 20px;
+    }
+    .omchu1{
+        padding: 0px 0px 0px 40px;
+    }
+    h2.to{
+        font-size: 25px;
+        margin: 0px;
+    }
+    hr.no_line{
+        margin: -2px 0px;
+    }
+    .col-lg-12.giua1{
+        padding-bottom: 350px;
+    }
+    .omchu2{
+        padding-top: 18px;
+    }
+    .col-lg-12.giua2{
+    padding-top: 40px;
+    padding-bottom: 380px;
+    }
+    .col-lg-12.giua3 {
+        padding-bottom: 460px;
+    }
+}

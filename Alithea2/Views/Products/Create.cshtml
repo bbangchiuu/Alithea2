@@ -1,0 +1,141 @@
+﻿@model Alithea2.Models.Product
+@using Alithea2.Models
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Dictionary<String, String> errors = new Dictionary<string, string>();
+    if (ViewBag.Errors != null)
+    {
+        errors = ViewBag.Errors as Dictionary<string, string>;
+    }
+    List<Category> listCategories = new List<Category>();
+    if (ViewBag.listCategories != null)
+    {
+        listCategories = ViewBag.listCategories as List<Category>;
+    }
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+
+                @if (TempData["Error"] != null)
+                {
+                    <h4 class="text-danger">@TempData["Error"]</h4>
+                }
+
+                <h4 class="card-title">Danh mục</h4>
+                <p class="card-description">Tạo danh mục</p>
+                @using (Html.BeginForm("Create", "Products", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoleNumber)
+                        @Html.EditorFor(model => model.RoleNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.RoleNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductName)
+                        @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductName, errors.ContainsKey("ProductName") ? errors["ProductName"] : "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductDescription)
+                        @Html.EditorFor(model => model.ProductDescription, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductDescription, errors.ContainsKey("ProductDescription") ? errors["ProductDescription"] : "", new { @class = "text-danger" })
+                    </div>
+                    <select class="form-control" id="sort">
+                        <option value="-1">Danh mục</option>
+                        @foreach (var item in listCategories)
+                        {
+                            <option value="@item.CategoryID">@item.CategoryName</option>
+                        }
+                    </select>
+
+                    <div class="form-group" style="margin-top: 20px; margin-bottom: 50px;">
+                        <span class="control-label col-md-2">Danh mục đã chọn: </span>
+                        <div class="col-md-10" id="listCat">
+                            @if (errors.ContainsKey("Category"))
+                            {
+                                <p class="text-danger">@errors["Category"]</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UnitPrice)
+                        @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Quantity)
+                        @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductImage)
+                        <div class="col-md-8">
+                            <img id="preview" src="#" class="hidden img-thumbnail" style="width: 100px" alt="Alternate Text" />
+                            @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+                            @Html.ValidationMessageFor(model => model.ProductImage, errors.ContainsKey("ProductImage") ? errors["ProductImage"] : "", new { @class = "text-danger" })
+                            <div style="margin-top: 5px">
+                                <button type="button" id="upload_widget" class="btn btn-primary">Upload files</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Status)
+                        @Html.EnumDropDownListFor(model => model.Status, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                    </div>
+                    <input type="submit" class="btn btn-gradient-primary mr-2" value="Tạo danh mục mới" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function delCate(item) {
+            var idDiv = "#item-" + item;
+            $(idDiv).remove();
+        }
+
+        $(document).ready(function () {
+            $("#sort").change(function () {
+                console.log($(this).val() + " - " + $("#sort option:selected").text());
+                console.log($("#listCat").text().includes($("#sort option:selected").text()));
+                console.log($("#sort option:selected").text());
+                console.log($(this).val());
+                console.log($(this).val() > 0);
+                if ($(this).val() > 0) {
+                    var text = '<div class="badge badge-info" id="item-' + $(this).val() + '"><input type="hidden" name="ints" value="' + $(this).val() + '" />' + $("#sort option:selected").text() + '<i class="mdi mdi-backspace" onclick="delCate(' + $(this).val() + ')" style="margin-left: 10px;"></i></div>';
+                    $("#listCat").append(text);
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        var myWidget = cloudinary.createUploadWidget({
+                cloudName: 'bangnguyen',
+                uploadPreset: 'Alithea'
+            }, (error, result) => {
+                if (!error && result && result.event === "success") {
+                    var imgLink = result.info.secure_url;
+                    document.querySelector("input[name='ProductImage']").value = imgLink;
+                    var imgPreview = document.getElementById("preview");
+                    imgPreview.src = imgLink;
+                    imgPreview.classList.remove("hidden");
+                }
+            }
+        )
+
+        document.getElementById("upload_widget").addEventListener("click", function () {
+            myWidget.open();
+        }, false);
+    </script>
+}

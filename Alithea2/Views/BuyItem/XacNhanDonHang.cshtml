@@ -1,0 +1,183 @@
+﻿
+@using Alithea2.Models
+
+@{
+    ViewBag.Title = "XacNhanDonHang";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+
+    List<Product> listProducts = new List<Product>();
+    if (Session["buyItem"] != null)
+    {
+        listProducts = Session["buyItem"] as List<Product>;
+    }
+
+    Customer customer = new Customer();
+    if (Session["Customer"] != null)
+    {
+        customer = Session["Customer"] as Customer;
+    }
+}
+
+<div class="detail8">
+    <div class="container m-t-50">
+        <div>
+            @if (TempData["Error"] != null)
+            {
+                <h2 class="text-center title-block wow bounceIn m-t-100 text-danger" data-wow-delay="0.1s" data-wow-offset="50">
+                    @TempData["Error"]
+                </h2>
+            }
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-12 m-t-150 dsxacnhanorder">
+                <div class="dsxacnhanorder-list float-left daxacnhanorder divfirst">
+                    <a href="/BuyItem/Index">1.Sản phẩm đã chọn</a>
+                </div>
+                <!-- <div class="muitenxn muiten1 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left daxacnhanorder">
+                    <a href="/BuyItem/ThongTinKhacHang">2.Thông tin giao hàng</a>
+                </div>
+                <!-- <div class="right-triangle muiten2 float-left"></div> -->
+                <div class="dsxacnhanorder-list float-left">
+                    <a href="/BuyItem/XacNhanDonHang">3.Xác nhận đơn hàng</a>
+                </div>
+                <div class="phuorder divlast"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                @* <?php if(isset($_SESSION['products_order'])){ ?> *@
+                @if (listProducts != null && listProducts.Count > 0)
+                {
+                    <table class="table table-hover box">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Ảnh</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Đơn giá</th>
+                                <th scope="col">Màu</th>
+                                <th scope="col">Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var val in listProducts)
+                            {
+                                <tr>
+                                    <td>
+                                        @val.ProductName
+                                    </td>
+                                    <td>
+                                        <a href="/Home/Details/@val.ProductID"><img src="@val.ProductImage"></a>
+                                    </td>
+                                    <td>
+                                        @val.Quantity
+                                    </td>
+                                    <td>
+                                        @string.Format("{0:C}", val.UnitPrice)
+
+                                    </td>
+                                    <td>
+                                        @if (val.Color == Product.ColorProduct.color_Green)
+                                        {
+                                            <button type="button" class="btn btn-success">Xanh lá cây</button>
+                                        }
+                                        else if (val.Color == Product.ColorProduct.color_Blue)
+                                        {
+                                            <button type="button" class="btn btn-primary">Xanh</button>
+                                        }
+                                        else if (val.Color == Product.ColorProduct.color_Yellow)
+                                        {
+                                            <button type="button" class="btn btn-warning">Vàng</button>
+                                        }
+                                        else if (val.Color == Product.ColorProduct.color_Red)
+                                        {
+                                            <button type="button" class="btn btn-danger">Đỏ</button>
+                                        }
+                                        else
+                                        {
+                                            <strong>Mặc định</strong>
+                                        }
+                                    </td>
+                                    <td>
+                                        @val.Size
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="container xnthong-tin-kh">
+                <div class="col-md-12">
+                    <p class="text-center">Thông tin khách hàng</p>
+                </div>
+                <div class="form-row col-sm-12">
+                    <div class="col-md-12 mb-3">
+                        <div class="col-sm-5 float-left">
+                            Họ và tên:
+                        </div>
+                        <div class="col-sm-3 float-left">
+                            @customer.FullName
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="col-sm-5 float-left">
+                            Email:
+                        </div>
+                        <div class="col-sm-3 float-left">
+                            @customer.Email
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="col-sm-5 float-left">
+                            Địa chỉ:
+                        </div>
+                        <div class="col-sm-3 float-left">
+                            @customer.Address
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="col-sm-5 float-left">
+                            Số điện thoại:
+                        </div>
+                        <div class="col-sm-3 float-left">
+                            @customer.Phone
+                        </div>
+                    </div>
+                    <p class="sangbenphai" id="total_price">
+                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: @string.Format("{0:C}", @Session["TotalPrice"])</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container m-t-100">
+                @using (Html.BeginForm("XacNhanDonHang", "BuyItem", FormMethod.Post, htmlAttributes: new { @name = "xacnhandonhang_form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="comment">Thêm:</label>
+                        <textarea class="form-control" rows="5" name="comment" id="comment"></textarea>
+                    </div>
+                    <div class="col-md-9 float-left">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="defaultUnchecked" id="defaultUnchecked">
+                            <label class="custom-control-label" for="defaultUnchecked">Tôi đã đọc kỹ điều khoản và chấp nhận</label>
+                            <p class="text-danger" id="checbox_dieukhoan"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 float-left">
+                        <button class="btn btn-success" type="submit" name="xacnhandonhang" id="xacnhandonhang" onclick="return rt_xacnhandonhang()">
+                            Đặt hàng ngay
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

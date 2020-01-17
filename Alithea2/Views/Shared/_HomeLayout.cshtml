@@ -1,0 +1,189 @@
+﻿@using Alithea2.Models
+@{
+    UserAccount userAccount = new UserAccount();
+    if (Session["UserAccount"] != null)
+    {
+        userAccount = Session["UserAccount"] as UserAccount;
+    }
+    else
+    {
+        userAccount = null;
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea</title>
+    <link rel="stylesheet" href="~/Content/public/vendor/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/public/vendor/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="~/Content/public/vendor/font-awesome.css">
+    <link rel="stylesheet" href="~/Content/public/vendor/all.css">
+    <link rel="stylesheet" href="~/Content/public/vendor/css/animate.css">
+    <link rel="stylesheet" href="~/Content/public/stylesheets/style.css?p=1">
+    <link rel="stylesheet" href="~/Content/public/stylesheets/ipadto.css">
+    <link rel="stylesheet" href="~/Content/public/stylesheets/ipadnho.css">
+    <link rel="stylesheet" href="~/Content/public/stylesheets/iphone.css">
+</head>
+<body>
+    <div class="nav col-md-12">
+        <div class="col-md-6 logo">
+            <small class="hot-line wow bounceIn" data-wow-delay="0.1s"><i class="fa fa-phone"></i> Hotline: +61(0) 383 766 284</small>
+            <div class="row">
+                <p class="logo-word col-sm-3 wow bounceIn" data-wow-delay="0.1s">
+                    <a href="/Home">
+                        <img class="anh-logo" src="~/Content/public/images/logo.png" alt="">
+                    </a>
+                </p>
+                <form action="/Home/Search" method="GET" class="col-sm-9 wow bounceIn" data-wow-delay="0.2s">
+                    <div class="form-group search-input">
+                        <label for=""></label>
+                        <input type="text" class="form-control" value="@ViewBag.productname" name="productname" id="" aria-describedby="helpId"
+                               placeholder="Tìm kiếm sản phẩm......">
+                    </div>
+                    <button type="submit" class="nut-search"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6 menu">
+            <ul>
+                <a href="#" class="xehang wow bounceIn" data-wow-delay="0.5s">
+                    <i class="fa fa-shopping-cart"></i>
+                </a>
+                @if (userAccount != null)
+                {
+                    <li class="drd bounceIn" data-wow-delay="0.6s">
+                        <div class="dropdown" style="margin-top: -6.5px;">
+                            <div class="btn btn-secondary" data-toggle="dropdown">
+                                @userAccount.FullName
+                            </div>
+
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/Home/DeleteSessionUser">Đăng xuất</a>
+                                @if (userAccount.admin == UserAccount.Decentralization.Admin)
+                                {
+                                    <a class="dropdown-item" href="/products">Admin</a>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li class="wow bounceIn " data-wow-delay="0.6s">
+                        <a href="/Home/Register">Đăng ký</a>
+                    </li>
+                    <li class="wow bounceIn " data-wow-delay="0.6s">
+                        <a href="/Home/Login">Đăng nhập</a>
+                    </li>
+                }
+                <li class="wow bounceIn " data-wow-delay="0.2s"><a href="/Home/ListCategory">Danh mục</a> </li>
+                <a href="/BuyItem/Index" class="xehang bounceIn">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="badge badge-light custom-badge" id="qty_order">
+                        @if (Session["TotalQuantity"] != null)
+                        {
+                            @Session["TotalQuantity"]
+                        }
+                        else
+                        {
+                            <span>0</span>
+                        }
+
+                    </span>
+                </a>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="row">
+            @RenderBody()
+        </div>
+    </div>
+
+<footer class="footer m-t-50">
+    
+    <div class="widgets_wrapper">
+        <div class="container">
+            <div class="column one-fourth">
+                <div class="widget_text widget widget_custom_html">
+                    <div class="textwidget custom-html-widget">
+                        <div class="image_frame image_item no_link scale-with-grid alignnone no_border">
+                            <h4 class="add-h4 wow bounceIn" data-wow-delay="0.1s">Alithea</h4>
+                        </div>
+
+                        <ul class="method">
+                            <p class="chube  wow bounceIn" data-wow-delay="0.1s">Trả bằng thẻ tín dụng</p>
+                            <li>
+                                <a href="#">
+                                    <img class="payment amex wow bounceIn" data-wow-delay="0.2s" src="~/Content/public/images/amex.png">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <img class="payment discover wow bounceIn" data-wow-delay="0.2s" src="~/Content/public/images/discover.png">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <img class="payment visa wow bounceIn" data-wow-delay="0.2s" src="~/Content/public/images/visa.png">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <img class="payment master wow bounceIn" data-wow-delay="0.2s" src="~/Content/public/images/master.png">
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="column one-fourth" style="margin-left: 10%">
+                <div class="widget_text widget widget_custom_html">
+                    <h4 class="add-h4 wow bounceIn" data-wow-delay="0.1s">Hỗ trợ khách hàng</h4>
+                    <div class="textwidget custom-html-widget">
+                        <hr class="no_line" style="margin: 0 auto 20px;">
+                        <p class="chube pd-b wow bounceIn" data-wow-delay="0.2s"> <a href="">Phí vận chuyển</a> </p>
+                        <p class="chube pd-b wow bounceIn" data-wow-delay="0.2s"> <a href="">Trả lại</a> </p>
+                        <p class="chube pd-b wow bounceIn" data-wow-delay="0.2s"> <a href="">Hướng dẫn đặt hàng</a></p>
+                        <p class="chube pd-b wow bounceIn" data-wow-delay="0.2s"> <a href="">Đơn hàng của bạn</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="column one-fourth" style="margin-left: 15%">
+                <div class="widget_text widget widget_custom_html">
+                    <h4 class="add-h4 wow bounceIn" data-wow-delay="0.1s">Liện hệ với chúng tôi</h4>
+                    <div class="textwidget custom-html-widget">
+                        <hr class="no_line" style="margin: 0 auto 20px;">
+                        <p class="chube wow bounceIn" data-wow-delay="0.2s"> 133 Xuân thủy<br> Cầu giấy, Hà Nội,<br> Việt Nam</p>
+                        <p class="chube wow bounceIn" data-wow-delay="0.2s">0986 818 699</p>
+                        <hr class="no_line" style="margin: 0 auto 55px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</footer>
+
+    <script src="~/Content/public/vendor/jquery.js"></script>
+    <script src="~/Content/public/vendor/js/poper.js"></script>
+    <script src="~/Content/public/vendor/js/easing.js"></script>
+    <script src="~/Content/public/vendor/js/bootstrap.min.js"></script>
+    <script src="~/Content/public/vendor/js/all.js"></script>
+    <script src="~/Content/public/vendor/js/wow.js"></script>
+    <script src="~/Content/public/vendor/js/jquery.countdown.min.js"></script>
+    <script src="~/Content/public/javascripts/admin.js?p=12"></script>
+    <script src="~/Content/public/javascripts/register.js?p=1234"></script>
+    <script src="~/Content/public/javascripts/ShoppingCart.js?p=12"></script>
+<script src="~/Content/public/javascripts/formatMoney.js?p=12"></script>
+ <script src="~/Scripts/globalize.culture.en-GB.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>
