@@ -3,15 +3,14 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    List<Product> listProducts = new List<Product>();
-    if (Session["buyItem"] != null)
-    {
-        listProducts = Session["buyItem"] as List<Product>;
-    }
+
+    var listProducts = Session["buyItem"] as List<Product>;
+    var listColor = ViewBag.Colors as List<Color>;
+    var listSize = ViewBag.Sizes as List<Size>;
 }
 
 <div class="detail8">
-    <div class="container m-t-150">
+    <div class="m-t-150" style="width: 1250px; height: auto; margin-left: auto; margin-right: auto;">
         @if (TempData["Error"] != null)
         {
             <h2 class="text-center title-block wow bounceIn text-danger" data-wow-delay="0.1s" data-wow-offset="50">
@@ -48,13 +47,15 @@
                                 <th scope="col">Đơn giá</th>
                                 <th scope="col">Màu</th>
                                 <th scope="col">Size</th>
+                                <th scope="col">VAT</th>
+                                <th scope="col">Thành tiền</th>
                                 <th scope="col">Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
                             @for (int i = 0; i < listProducts.Count; i++)
                             {
-                            <tr>
+                            <tr id="ShoppingCart-item-@i">
                                 <td>
                                     <a href="">@listProducts[i].ProductName</a>
                                 </td>
@@ -66,36 +67,34 @@
                                 <td>
                                     <div class="input-group col-sm-5">
 
-                                        <div class="input-group-prepend float-left">
-                                            <div class="btn btn-light btn-sm minus-btn"><a href="/BuyItem/UpdateQuantity?pro_id=@listProducts[i].ProductID&quantity=-1&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)"><i class="fa fa-minus"></i></a></div>
+                                        <div class="input-group-prepend float-left" onclick="updateItem('@i', -1)">
+                                            <div class="btn btn-light btn-sm minus-btn" style="width: 35px;"><a><i class="fa fa-minus"></i></a></div>
                                         </div>
-                                        <input style="width: 30px;" class="form-control form-control-sm qty_input float-left" value="@listProducts[i].Quantity">
-                                        @* <input type="number" class="form-control form-control-sm qty_input" value="@val.Quantity"> *@
-                                        <div class="input-group-prepend float-left">
-                                            <div class="btn btn-light btn-sm plus-btn"><a href="/BuyItem/UpdateQuantity?pro_id=@listProducts[i].ProductID&quantity=1&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)"><i class="fa fa-plus"></i></a></div>
+                                        <input style="width: 35px;" id="idItem-@i" class="form-control form-control-sm qty_input float-left" value="@listProducts[i].Quantity">
+                                        <div class="input-group-prepend float-left" onclick="updateItem('@i', 1)">
+                                            <div class="btn btn-light btn-sm plus-btn" style="width: 35px;"><a><i class="fa fa-plus"></i></a></div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                @string.Format("{0:C}", @listProducts[i].UnitPrice )
-
+                                    @string.Format("{0:C}", @listProducts[i].UnitPrice)
                                 </td>
                                 <td>
-                                    @if (listProducts[i].Color == Product.ColorProduct.color_Green)
+                                    @if (listProducts[i].Color == 1)
                                     {
-                                        <button type="button" class="btn btn-success">Xanh lá cây</button>
+                                        <button style="background: red" type="button" class="btn btn-danger">@listProducts[i].NameColor</button>
                                     }
-                                    else if (listProducts[i].Color == Product.ColorProduct.color_Blue)
+                                    else if (listProducts[i].Color == 2)
                                     {
-                                        <button type="button" class="btn btn-primary">Xanh</button>
+                                        <button style="background: blue" type="button" class="btn btn-danger">@listProducts[i].NameColor</button>
                                     }
-                                    else if (listProducts[i].Color == Product.ColorProduct.color_Yellow)
+                                    else if (listProducts[i].Color == 3)
                                     {
-                                        <button type="button" class="btn btn-warning">Vàng</button>
+                                        <button style="background: yellow" type="button" class="btn btn-danger">@listProducts[i].NameColor</button>
                                     }
-                                    else if (listProducts[i].Color == Product.ColorProduct.color_Red)
+                                    else if (listProducts[i].Color == 4)
                                     {
-                                        <button type="button" class="btn btn-danger">Đỏ</button>
+                                        <button style="background: green" type="button" class="btn btn-danger">@listProducts[i].NameColor</button>
                                     }
                                     else
                                     {
@@ -103,10 +102,16 @@
                                     }
                                 </td>
                                 <td>
-                                    @listProducts[i].Size
+                                    @listProducts[i].NameSize
                                 </td>
                                 <td>
-                                    <a class="delete-user" href="/BuyItem/Delete_order?pro_id=@listProducts[i].ProductID&color=@((int)listProducts[i].Color)&size=@((int)listProducts[i].Size)">
+                                    10%
+                                </td>
+                                <td>
+                                    @string.Format("{0:C}", listProducts[i].UnitPrice * listProducts[i].Quantity)
+                                </td>
+                                <td>
+                                    <a class="delete-user" data-id="@i" onclick="DeleteItem('@i')">
                                         <i class="fa fa-trash-alt list-users" aria-hidden="true"></i>
                                     </a>
                                 </td>
@@ -117,8 +122,8 @@
                     <p class="sangbenphai" style="color: white">
                         <a href="/buyItem/ThongTinKhacHang" class="btn btn-success btn-block t-30 nut-checkout" name="dathang">Đặt hàng</a>
                     </p>
-                    <p class="sangbenphai" id="total_price">
-                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: @string.Format("{0:C}", @Session["TotalPrice"] )</a>
+                    <p class="sangbenphai">
+                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: <span id="total_price">@($"{@Session["TotalPrice"]:C}")</span></a>
                     </p>
                 }
                 else
@@ -129,4 +134,78 @@
         </div>
     </div>
 </div>
+@section scripts
+{
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        }
 
+        function updateItem(idItem, quantityUpdate) {
+            console.log("id item: " + idItem);
+            console.log("quantity Update: " + quantityUpdate);
+
+            var quantityItem = "#idItem-" + idItem;
+
+            var quantity = $(quantityItem).val();
+            if (quantityUpdate < 0) {
+                quantityUpdate = -1;
+                $(quantityItem).val(--quantity);
+
+                if (quantity <= 0) {
+                    $(quantityItem).val(0);
+                }
+            } else {
+                quantityUpdate = 1;
+                $(quantityItem).val(++quantity);
+
+                if (quantity >= 10) {
+                    $(quantityItem).val(10);
+                }
+            }
+
+            $.ajax({
+                url: "/BuyItem/UpdateItem", 
+                type: "post", // chọn phương thức gửi là post
+                dataType: "json", // dữ liệu trả về dạng text
+                data: { // Danh sách các thuộc tính sẽ gửi đi
+                    idItem: idItem,
+                    quantity: $(quantityItem).val()
+                },
+                success: function (result) {
+                    if ($(quantityItem).val() < 1) {
+                        var item = "#ShoppingCart-item-" + idItem;
+                        $(item).remove();
+                    }
+
+                    var price = formatNumber(result.TotalPrice) + ",00 ₫";
+                    $("#total_price").html(price);
+
+                    var quantity = result.TotalQuantity;
+                    $("#qty_order").html(quantity);
+                }
+            });
+        }
+
+        function DeleteItem(idItem) {
+            $.ajax({
+                url: "/BuyItem/DeleteItem", 
+                type: "post", // chọn phương thức gửi là post
+                dataType: "json", // dữ liệu trả về dạng text
+                data: { // Danh sách các thuộc tính sẽ gửi đi
+                    idItem: idItem
+                },
+                success: function (result) {
+                    var item = "#ShoppingCart-item-" + idItem;
+                    $(item).remove();
+
+                    var price = formatNumber(result.TotalPrice) + ",00 ₫";
+                    $("#total_price").html(price);
+
+                    var quantity = result.TotalQuantity;
+                    $("#qty_order").html(quantity);
+                }
+            });
+        }
+    </script>
+}

@@ -68,28 +68,13 @@ namespace Alithea2.Models
 
         public ICollection<ProductCategory> ProductCategories { get; set; }
 
-        public ColorProduct? Color;
-        public enum ColorProduct
-        {
-            [Display(Name = "Mặc định")]
-            Default = 0,
-            [Display(Name = "Đỏ")]
-            color_Red = 2,
-            [Display(Name = "Xanh")]
-            color_Blue = 3,
-            [Display(Name = "Vàng")]
-            color_Yellow = 4,
-            [Display(Name = "Xanh lá cây")]
-            color_Green = 5,
-        }
+        public ICollection<Attribute> Attributes { get; set; }
 
-        public SizeProduct? Size;
-        public enum SizeProduct
-        {
-            M = 1,
-            L = 0,
-            XL = 2,
-        }
+        public int Color;
+        public string NameColor;
+
+        public int Size;
+        public string NameSize;
 
         public Product()
         {
@@ -137,8 +122,6 @@ namespace Alithea2.Models
             Debug.WriteLine("CreatedAt: " + CreatedAt);
             Debug.WriteLine("UpdatedAt: " + UpdatedAt);
             Debug.WriteLine("DeletedAt: " + DeletedAt);
-            Debug.WriteLine("color: " + Color);
-            Debug.WriteLine("size: " + Size);
         }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)

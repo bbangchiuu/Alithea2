@@ -91,8 +91,11 @@ namespace Alithea2.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.listCat = _productCategoryService.GetCategories(id);
-          
+            ViewBag.listProductCategories = _productCategoryService.GetCategories(id);
+
+            //list attribute
+            ViewBag.listPro = db.Attributes.Where(a => a.ProductID == id).ToList();
+
             return View(product);
         }
 
@@ -103,7 +106,8 @@ namespace Alithea2.Controllers
 //            {
 //                return Redirect("/Home/Login");
 //            }
-
+            ViewBag.Colos = db.Colors.ToList();
+            ViewBag.Sizes = db.Sizes.ToList();
             ViewBag.listCategories = _categoryService.GetAll().ToList();
            
             return View();
@@ -114,7 +118,7 @@ namespace Alithea2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProductID,RoleNumber,ProductName,ProductDescription,UnitPrice,Quantity,ProductImage,CreatedAt,UpdatedAt,DeletedAt,Status")] Product product, List<int> ints)
+        public ActionResult Create(Product product, List<int> ints, List<int> idColor, List<int> quanityColor, List<double> priceColor, List<string> imageColor)
         {
 //            if (!CheckUser())
 //            {
@@ -126,37 +130,13 @@ namespace Alithea2.Controllers
         
             if (errors.Count == 0 && ints != null && ints.Count > 0)
             {
-                //SET UP PRODUCT
-                product.Display();
-
-                using (_productService.BeginTransaction())
+                if (_productService.AddProductAndListCategoryOfProduct(product, ints, idColor, quanityColor, priceColor, imageColor))
                 {
-                    try
-                    {
-                        int pro_id = _productService.AddProduct(product);
-                        product.Display();
-                        if (pro_id > 0)
-                        {
-                            for (int i = 0; i < ints.Count; i++)
-                            {
-                                _productCategoryService.Insert(new ProductCategory
-                                {
-                                    ProductID = 0,
-                                    CategoryID = ints[i]
-                                });
-                            }
-
-                            _productCategoryService.Save();
-                        }
-
-                        _productService.CommitTransaction();
-                        return RedirectToAction("Index");
-                    }
-                    catch (Exception e)
-                    {
-                        _productService.RollBackTransaction();
-                        Debug.WriteLine("loi: " + e.Message);
-                    }
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["Error"] = "Đã xảy ra lỗi";
                 }
             }
             else
@@ -164,10 +144,13 @@ namespace Alithea2.Controllers
                 errors.Add("Category", "Bạn chưa chọn danh mục cho sản phẩm");
             }
 
-            TempData["Error"] = "Đã xảy ra lỗi";
             ViewBag.Errors = errors;
+
             //GET LIST CATEGORY
             ViewBag.listCategories = _categoryService.GetAll().ToList();
+
+            //list color
+            ViewBag.Colos = db.Colors.ToList();
 
             return View(product);
         }
@@ -186,38 +169,23 @@ namespace Alithea2.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            Product product = _productService.SelectById(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
             //get list category
-            List<Category> listCategories = new List<Category>();
-            try
-            {
-                listCategories = db.Categories.ToList();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-            ViewBag.listCategories = listCategories;
+            ViewBag.listCategories = _categoryService.GetAll().ToList();
 
-            //get product
-            Product product = new Product();
-            List<ProductCategory> listProductCategories = new List<ProductCategory>();
+            //get category of product
+            ViewBag.listProductCategories = _productCategoryService.GetCategories(id);
 
-            try
-            {
-                product = db.Products.Find(id);
-                if (product == null)
-                {
-                    return HttpNotFound();
-                }
+            //list color
+            ViewBag.Colos = db.Colors.ToList();
 
-                //get category of product
-                listProductCategories = db.ProductCategories.Where(pc => pc.ProductID == id).ToList();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-            ViewBag.listProductCategories = listProductCategories;
+            //list attribute
+            ViewBag.listPro = db.Attributes.Where(a => a.ProductID == id).ToList();
 
             return View(product);
         }
@@ -227,7 +195,7 @@ namespace Alithea2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,RoleNumber,ProductName,ProductDescription,UnitPrice,Quantity,ProductImage,CreatedAt,UpdatedAt,DeletedAt,Status")] Product product, List<int> ints)
+        public ActionResult Edit(Product product, List<int> ints, List<int> idColor, List<int> quanityColor, List<double> priceColor, List<string> imageColor)
         {
 //            if (!CheckUser())
 //            {
@@ -235,123 +203,56 @@ namespace Alithea2.Controllers
 //            }
 
             product.Display();
-            //GET LIST CATEGORY
-            List<Category> listCategories = new List<Category>();
-            try
-            {
-                listCategories = db.Categories.ToList();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-            ViewBag.listCategories = listCategories;
-
-            //get category of product
-            List<ProductCategory> listProductCategories = new List<ProductCategory>();
-            try
-            {
-                listProductCategories = db.ProductCategories.Where(pc => pc.ProductID == product.ProductID).ToList();
-                
-                Debug.WriteLine("dang chay");
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-            Debug.WriteLine("count1: " + listProductCategories.Count);
 
             //CHECK ERROR
             Dictionary<string, string> errors = product.Validate();
-            if (ints != null)
+
+            if (errors.Count == 0 && ints != null && ints.Count > 0)
             {
-                for (int i = 0; i < ints.Count; i++)
+                if (_productService.UpdateProduct(product, ints, idColor, quanityColor, priceColor, imageColor))
                 {
-                    Debug.WriteLine("id: " + ints[i]);
-                }
-            }
-            else
-            {
-                Debug.WriteLine("khong co");
-                errors.Add("Category", "Bạn chưa chọn danh mục cho sản phẩm");
-            }
-
-            for (int index = 0; index < errors.Count; index++)
-            {
-                var item = errors.ElementAt(index);
-                Debug.WriteLine(item.Key + " - " + item.Value);
-//                var itemKey = item.Key;
-//                var itemValue = item.Value;
-            }
-
-            if (errors.Count == 0 && ints != null)
-            {
-                product.UpdatedAt = DateTime.Now;
-                if (ModelState.IsValid)
-                {
-                    //update product
-                    db.Entry(product).State = EntityState.Modified;
-
-                    //remove category of product
-                    db.ProductCategories.RemoveRange(listProductCategories);
-
-                    //add category of product
-                    listProductCategories = new List<ProductCategory>();
-                    for (int i = 0; i < ints.Count; i++)
-                    {
-                        ProductCategory newProductCategory = new ProductCategory
-                        {
-                            ProductID = product.ProductID,
-                            CategoryID = ints[i]
-                        };
-                        listProductCategories.Add(newProductCategory);
-                    }
-                    db.ProductCategories.AddRange(listProductCategories);
-
-                    //save database
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details/" + product.ProductID);
                 }
                 else
                 {
-                    Debug.WriteLine("khong hop le");
+                    TempData["Error"] = "Đã xảy ra lỗi";
                 }
             }
             else
             {
-                Debug.WriteLine("dang loi");
+                errors.Add("Category", "Bạn chưa chọn danh mục cho sản phẩm");
             }
 
             ViewBag.Errors = errors;
-            Debug.WriteLine("count2: " + listProductCategories.Count);
-            for (int i = 0; i < listProductCategories.Count; i++)
-            {
-                listProductCategories[i].Display();
-            }
-            ViewBag.listProductCategories = listProductCategories;
+
+            //GET LIST CATEGORY
+            ViewBag.listCategories = _categoryService.GetAll().ToList();
+
+            //get category of product
+            ViewBag.listProductCategories = _productCategoryService.GetCategories(product.ProductID);
 
             return View(product);
         }
 
         // GET: Products/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (!CheckUser())
-            {
-                return Redirect("/Home/Login");
-            }
-
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Product product = db.Products.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
-        }
+//        public ActionResult Delete(int? id)
+//        {
+//            if (!CheckUser())
+//            {
+//                return Redirect("/Home/Login");
+//            }
+//
+//            if (id == null)
+//            {
+//                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+//            }
+//            Product product = db.Products.Find(id);
+//            if (product == null)
+//            {
+//                return HttpNotFound();
+//            }
+//            return View(product);
+//        }
 
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -363,11 +264,13 @@ namespace Alithea2.Controllers
                 return Redirect("/Home/Login");
             }
 
-            Product product = db.Products.Find(id);
-            product.Status = Product.ProductStatus.Deleted;
-            db.Entry(product).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (_productService.DeleteProduct(id))
+            {
+                return RedirectToAction("Index");
+            }
+
+            TempData["Error"] = "Đã xảy ra lỗi";
+            return RedirectToAction("Edit/" + id);
         }
 
         protected override void Dispose(bool disposing)

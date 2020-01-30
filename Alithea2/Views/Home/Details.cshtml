@@ -1,13 +1,12 @@
 ﻿@using Alithea2.Models
+@using Attribute = Alithea2.Models.Attribute
 @model Alithea2.Models.Product
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    List<ProductCategory> listProductCategories = new List<ProductCategory>();
-    if (ViewBag.listProductCategories != null)
-    {
-        listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
-    }
+    var listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
+    var productAttribute = ViewBag.productAttribute as List<Attribute>;
+    var Size = ViewBag.Size as List<Size>;
 }
 
 <div class="detail11">
@@ -29,10 +28,26 @@
                 </div>
                 <div class="bock-img-sp col-sm-6">
                     <div class="with-100">
-                        <div class="top-thumbnail box wow bounceInLeft" data-wow-delay="0.2s">
+                        <div class="top-thumbnail box wow bounceInLeft" data-wow-delay="0.2s" style="height: auto;">
                             @* <img src="~/Content/public/images/trai.jpg" class="nut-trai" alt=""> *@
-                            <img src="@Html.DisplayFor(model => model.ProductImage)" class="anh-thumbnail" alt="">
+                            <img id="img-main" src="@Html.DisplayFor(model => model.ProductImage)" class="anh-thumbnail" alt="">
                             @* <img src="~/Content/public/images/phai.jpg" class="nut-phai" alt=""> *@
+                        </div>
+                        <div class="bot-thumbnail wow bounceInRight" data-wow-delay="0.3s">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img onclick="imgClick('@Html.DisplayFor(model => model.ProductImage)', '@Html.DisplayFor(model => model.UnitPrice)', '@Html.DisplayFor(model => model.Quantity)')" src="@Html.DisplayFor(model => model.ProductImage)" class="anh-thumbnail box" style="height: 170px;" alt="">
+                                </div>
+                                @if (productAttribute != null)
+                                {
+                                    for (int i = 0; i < productAttribute.Count; i++)
+                                    {
+                                        <div class="col-sm-4">
+                                            <img onclick="imgClick('@productAttribute[i].ProductImage', '@string.Format("{0:C}", productAttribute[i].UnitPrice)', '@productAttribute[i].Quantity')" src="@productAttribute[i].ProductImage" class="anh-thumbnail box" style="height: 170px;" alt="">
+                                        </div>
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -44,7 +59,7 @@
                         <div class="row">
                             <p class="col-sm-12">
                                 <strong>Đơn giá:</strong>
-                                @Html.DisplayFor(model => model.UnitPrice)
+                                <span id="pro-price">@Html.DisplayFor(model => model.UnitPrice)</span>
                             </p>
                         </div>
                     </div>
@@ -76,39 +91,76 @@
                                         <button class="btn btn-light btn-sm" id="plus-btn"><i class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
+                                <small id="pro-quantity">
+                                    @Html.DisplayFor(model => model.Quantity) sản phẩm có sẵn
+                                </small>
                             </div>
                         </div>
                     </div>
                     <div class="row m-top-30 wow bounceInRight" data-wow-delay="0.6s">
                         <div class="col-sm-12 col-sm-offset-4">
                             <div class="row">
-                                <p class="col-sm-3"><strong>Color:</strong></p>
+                                <p class="col-sm-3"><strong>Màu:</strong></p>
                                 <div class="input-group col-sm-8 mb-3">
                                     <div class="custom-radios">
                                         <div>
-                                            <input type="radio" id="color-1" name="color_pro" value="5">
-                                            <label for="color-1">
+                                            <input onclick="imgClick('@Html.DisplayFor(model => model.ProductImage)', '@Html.DisplayFor(model => model.UnitPrice)', '@Html.DisplayFor(model => model.Quantity)')" type="radio" id="color-0" name="color_pro" value="0">
+                                            <label for="color-0">
                                                 <span></span>
                                             </label>
+                                            <input id="nameColor-0" type="hidden" value="Mặc định" />
                                         </div>
-                                        <div>
-                                            <input type="radio" id="color-2" name="color_pro" value="3">
-                                            <label for="color-2">
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="color-3" name="color_pro" value="4">
-                                            <label for="color-3">
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="color-4" name="color_pro" value="2">
-                                            <label for="color-4">
-                                                <span></span>
-                                            </label>
-                                        </div>
+                                        @if (productAttribute != null)
+                                        {
+                                            for (int i = 0; i < productAttribute.Count; i++)
+                                            {
+                                                if (productAttribute[i].ColorID == 1)
+                                                {
+                                                    <div>
+                                                        <input onclick="imgClick('@productAttribute[i].ProductImage', '@string.Format("{0:C}", productAttribute[i].UnitPrice)', '@productAttribute[i].Quantity')" type="radio" id="color-4" name="color_pro" value="@productAttribute[i].ColorID">
+                                                        <label for="color-4">
+                                                            <span></span>
+                                                        </label>
+                                                        <input id="nameColor-@productAttribute[i].ColorID" type="hidden" value="@productAttribute[i].Color.NameColor" />
+                                                    </div>
+
+                                                }
+                                                else if (productAttribute[i].ColorID == 2)
+                                                {
+                                                    <div>
+                                                        <input onclick="imgClick('@productAttribute[i].ProductImage', '@string.Format("{0:C}", productAttribute[i].UnitPrice)', '@productAttribute[i].Quantity')" type="radio" id="color-2" name="color_pro" value="@productAttribute[i].ColorID">
+                                                        <label for="color-2">
+                                                            <span></span>
+                                                        </label>
+                                                        <input id="nameColor-@productAttribute[i].ColorID" type="hidden" value="@productAttribute[i].Color.NameColor" />
+                                                    </div>
+
+                                                }
+                                                else if (productAttribute[i].ColorID == 3)
+                                                {
+                                                    <div>
+                                                        <input onclick="imgClick('@productAttribute[i].ProductImage', '@string.Format("{0:C}", productAttribute[i].UnitPrice)', '@productAttribute[i].Quantity')" type="radio" id="color-1" name="color_pro" value="@productAttribute[i].ColorID">
+                                                        <label for="color-1">
+                                                            <span></span>
+                                                        </label>
+                                                        <input id="nameColor-@productAttribute[i].ColorID" type="hidden" value="@productAttribute[i].Color.NameColor" />
+                                                    </div>
+
+                                                }
+                                                else if (productAttribute[i].ColorID == 4)
+                                                {
+                                                    <div>
+                                                        <input onclick="imgClick('@productAttribute[i].ProductImage', '@string.Format("{0:C}", productAttribute[i].UnitPrice)', '@productAttribute[i].Quantity')" type="radio" id="color-3" name="color_pro" value="@productAttribute[i].ColorID">
+                                                        <label for="color-3">
+                                                            <span></span>
+                                                        </label>
+                                                        <input id="nameColor-@productAttribute[i].ColorID" type="hidden" value="@productAttribute[i].Color.NameColor" />
+                                                    </div>
+
+                                                }
+                                            }
+                                        }
+
                                     </div>
                                 </div>
                             </div>
@@ -120,9 +172,13 @@
                                 <p class="col-sm-12 j-center">
                                     <strong>Size: </strong>
                                     <select id="pro_size" class="form-control">
-                                        <option value="0">L</option>
-                                        <option value="1">M</option>
-                                        <option value="2">XL</option>
+                                        @if (Size != null)
+                                        {
+                                            for (int i = 0; i < Size.Count; i++)
+                                            {
+                                                <option value="@Size[i].SizeID">@Size[i].NameSize</option>
+                                            }
+                                        }
                                     </select>
                                 </p>
                             </div>
@@ -155,3 +211,24 @@
         </div>
     </section>
 </div>
+@section scripts
+{
+    <script>
+//        var formatter = new Intl.NumberFormat('en-US', {
+//            style: 'currency',
+//            currency: 'VND',
+//        });
+//        function formatNumber(num) {
+//            return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+//        }
+      
+        function imgClick(img, price, quantity) {
+            $("#img-main").attr("src", img);
+            $('#pro-quantity').html(quantity + ' sản phẩm có sẵn');
+            $('#pro-price').html(price);
+            console.log("anh " + img);
+            console.log("price " + price);
+            console.log("quantity " + quantity);
+        }
+    </script>
+}

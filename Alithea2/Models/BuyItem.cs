@@ -9,17 +9,17 @@ namespace Alithea2.Models
     {
         public List<Product> ListProducts = new List<Product>();
 
-        public void AddProduct(Product product, int Quantity, int? color, int? size)
+        public void AddProduct(Product product, int Quantity, int color, int size)
         {
             product.Quantity = Quantity;
             if (color != null)
             {
-                product.Color = (Product.ColorProduct?) color;
+                product.Color = color;
             }
 
             if (size != null)
             {
-                product.Size = (Product.SizeProduct?) size;
+                product.Size = size;
             }
             ListProducts.Add(product);
         }

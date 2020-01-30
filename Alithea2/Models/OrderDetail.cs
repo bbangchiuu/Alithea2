@@ -29,29 +29,22 @@ namespace Alithea2.Models
         [DisplayName("Số lượng")]
         public int Quantity { get; set; }
 
-        [DisplayName("Màu")]
-        public ColorProduct? Color { get; set; }
-        public enum ColorProduct
-        {
-            [Display(Name = "Mặc định")]
-            Default = 0,
-            [Display(Name = "Đỏ")]
-            color_Red = 2,
-            [Display(Name = "Xanh")]
-            color_Blue = 3,
-            [Display(Name = "Vàng")]
-            color_Yellow = 4,
-            [Display(Name = "Xanh lá cây")]
-            color_Green = 5,
-        }
+        [ForeignKey("Color")]
+        public int? ColorID { get; set; }
+        public virtual Color Color { get; set; }
 
-        public SizeProduct? Size { get; set; }
-        public enum SizeProduct
-        {
-            M = 1,
-            L = 0,
-            XL = 2,
-        }
+        [DisplayName("Màu")]
+        public string NameColor { get; set; }
+
+        [ForeignKey("Size")]
+        public int? SizeID { get; set; }
+        public virtual Size Size { get; set; }
+
+        [DisplayName("Size")]
+        public string NameSize { get; set; }
+
+        [DisplayName("Ảnh")]
+        public string ProductImage { get; set; }
 
         public void Display()
         {
@@ -60,8 +53,6 @@ namespace Alithea2.Models
             Debug.WriteLine("Product Id: " + ProductID);
             Debug.WriteLine("quantity: " + Quantity);
             Debug.WriteLine("price: " + UnitPrice);
-            Debug.WriteLine("color: " + Color);
-            Debug.WriteLine("size: " + Size);
         }
     }
 }

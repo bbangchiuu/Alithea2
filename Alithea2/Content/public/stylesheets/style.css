@@ -3314,7 +3314,7 @@ i.fa.fa-chevron-down.selector {
 }
 .anh-thumbnail{
     width: 100%;
-    height: auto;
+    height: 500px;
     cursor: pointer;
 }
 .bot-thumbnail{

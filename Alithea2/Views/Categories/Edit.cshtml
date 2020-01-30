@@ -196,7 +196,9 @@
     <script type="text/javascript">
     var myWidget = cloudinary.createUploadWidget({
             cloudName: 'bangnguyen',
-            uploadPreset: 'Alithea'}, (error, result) => {
+            uploadPreset: 'Alithea'
+        },
+        (error, result) => {
             if (!error && result && result.event === "success") {
                 var imgLink = result.info.secure_url;
                 document.querySelector("input[name='CategoryImage']").value = imgLink;
@@ -205,7 +207,7 @@
                 imgPreview.classList.remove("hidden");
             }
         }
-    )
+    );
 
     document.getElementById("upload_widget").addEventListener("click", function(){
         myWidget.open();

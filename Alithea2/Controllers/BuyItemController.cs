@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
@@ -8,73 +9,39 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
+using Alithea2.Controllers.Service.ShopManager;
 using Alithea2.Models;
+using Newtonsoft.Json;
 
 namespace Alithea2.Controllers
 {
+
     public class BuyItemController : Controller
     {
         private MyDbContext db = new MyDbContext();
+        private ShopService _shopService = new ShopService();
+
         BuyItem buyItem = new BuyItem();
         // GET: BuyItem
         public ActionResult Index()
         {
             Debug.WriteLine("dang chay Index");
-            listproductorderdetail();
+            ViewBag.Colors = db.Colors.ToList();
+            ViewBag.Sizes = db.Sizes.ToList();
+
             return View();
         }
 
-        public int AddItem(int pro_id, int quantity, int color, int size)
+        public int AddItem(int pro_id, int quantity, int color, string nameColor, int size, string nameSize)
         {
-            Debug.WriteLine("sizessss: " + size);
-            listproductorderdetail();
-            Console.WriteLine("dang chay add item");
-            if (Session["buyItem"] == null)
-            {
+            Debug.WriteLine("dang chay add item");
 
-                Product product = new Product();
-                try
-                {
-                    product = db.Products.Find(pro_id);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                }
-                if (product == null)
-                {
-                    return 0;
-                }
+            var hashtable = _shopService.AddItem(Session["buyItem"] as List<Product>, pro_id, quantity, color, nameColor, size, nameSize);
 
-                buyItem.AddProduct(product, quantity, color, size);
-                Session["TotalQuantity"] = quantity;
-                Session["TotalPrice"] = product.UnitPrice * quantity;
-                Session["buyItem"] = buyItem.ListProducts;
-            }
-            else
-            {
-                buyItem.ListProducts = Session["buyItem"] as List<Product>;
-                Boolean checkSP = true;
-                for (int i = 0; i < buyItem.ListProducts.Count; i++)
-                {
-                    buyItem.ListProducts[i].Display();
-                    if (buyItem.ListProducts[i].ProductID == pro_id 
-                        && buyItem.ListProducts[i].Color == (Product.ColorProduct?) color 
-                        && buyItem.ListProducts[i].Size == (Product.SizeProduct?) size)
-                    {
-                        buyItem.ListProducts[i].Quantity += quantity;
-                        checkSP = false;
-                        break;
-                    }
-                }
-                if (checkSP)
-                {
-                    Product product = db.Products.Find(pro_id);
-                    buyItem.AddProduct(product, quantity, color, size);
-                }
-
-                ListOrder(buyItem.ListProducts);
-            }
+            Session["buyItem"] = hashtable["listShoppingCart"];
+            Session["TotalPrice"] = (double)hashtable["TotalPrice"];
+            Session["TotalQuantity"] = (int)hashtable["TotalQuantity"];
 
             if (Session["TotalQuantity"] != null)
             {
@@ -83,131 +50,28 @@ namespace Alithea2.Controllers
             return quantity;
         }
 
-        public ActionResult UpdateQuantity(int pro_id, int quantity, int? color, int? size)
+        [HttpPost]
+        public string DeleteItem(int idItem)
         {
+            var hashtable = _shopService.DeleteItem(Session["buyItem"] as List<Product>, idItem);
 
-            if (color == null)
-            {
-                color = 0;
-            }
+            Session["buyItem"] = hashtable["listShoppingCart"];
+            Session["TotalPrice"] = (double) hashtable["TotalPrice"];
+            Session["TotalQuantity"] = (int) hashtable["TotalQuantity"];
 
-            if (size == null)
-            {
-                size = 0;
-            }
-
-            Debug.WriteLine("color: " + color);
-            Debug.WriteLine("size: " + size);
-
-            if (Session["buyItem"] != null)
-            {
-                buyItem.ListProducts = Session["buyItem"] as List<Product>;
-                for (int i = 0; i < buyItem.ListProducts.Count; i++)
-                {
-                    buyItem.ListProducts[i].Display();
-                    if (buyItem.ListProducts[i].ProductID == pro_id
-                        && buyItem.ListProducts[i].Color == (Product.ColorProduct?)color
-                        && buyItem.ListProducts[i].Size == (Product.SizeProduct?)size)
-                    {
-                        buyItem.ListProducts[i].Quantity += quantity;
-                        if (buyItem.ListProducts[i].Quantity <= 0)
-                        {
-                            buyItem.ListProducts.RemoveAt(i);
-                        }
-                        break;
-                    }
-                }
-
-                ListOrder(buyItem.ListProducts);
-            }
-
-            return Redirect("/BuyItem/Index");
+            return JsonConvert.SerializeObject(hashtable);
         }
 
-        public ActionResult Delete_order(int pro_id, int? color, int? size)
+        [HttpPost]
+        public string UpdateItem(int idItem, int quantity)
         {
-            buyItem.ListProducts = Session["buyItem"] as List<Product>;
+            var hashtable = _shopService.UpdateItem(Session["buyItem"] as List<Product>, idItem, quantity);
 
-            for (int i = 0; i < buyItem.ListProducts.Count; i++)
-            {
-                if (buyItem.ListProducts[i].ProductID == pro_id
-                    && buyItem.ListProducts[i].Color == (Product.ColorProduct?)color
-                    && buyItem.ListProducts[i].Size == (Product.SizeProduct?)size)
-                {
-                    Console.WriteLine("id: " + buyItem.ListProducts.ElementAt(i).ProductID);
-                    buyItem.ListProducts.RemoveAt(i);
-                }
-            }
+            Session["buyItem"] = hashtable["listShoppingCart"];
+            Session["TotalPrice"] = (double)hashtable["TotalPrice"];
+            Session["TotalQuantity"] = (int)hashtable["TotalQuantity"];
 
-            if (buyItem.ListProducts.Count == 0)
-            {
-                Session["TotalQuantity"] = null;
-                Session["TotalPrice"] = null;
-                Session["buyItem"] = null;
-            }
-            else
-            {
-                ListOrder(buyItem.ListProducts);
-            }
-
-            return Redirect("/BuyItem/Index");
-        }
-
-        public void ListOrder(List<Product> list_pro)
-        {
-            buyItem.ListProducts = list_pro;
-
-            if (buyItem.ListProducts.Count == 0)
-            {
-                Session["buyItem"] = null;
-            }
-            else
-            {
-                Session["buyItem"] = buyItem.ListProducts;
-            }
-
-            double totalprice = 0;
-            var totalQuantity = 0;
-            foreach (var val in buyItem.ListProducts)
-            {
-                totalprice = (double)(totalprice + val.UnitPrice * val.Quantity);
-                totalQuantity = (int)(totalQuantity + val.Quantity);
-            }
-
-            Session["TotalQuantity"] = totalQuantity;
-            Session["TotalPrice"] = totalprice;
-        }
-
-        public void listproductorderdetail()
-        {
-            List<Product> listProducts = new List<Product>();
-            if (Session["buyItem"] != null)
-            {
-                listProducts = Session["buyItem"] as List<Product>;
-            }
-            Debug.WriteLine("count: " + listProducts.Count);
-            Debug.WriteLine("----------------");
-            for (int i = 0; i < listProducts.Count; i++)
-            {
-                listProducts[i].Display();
-                Debug.WriteLine("----------------");
-            }
-
-            int TotalQuantity = 0;
-            if (Session["TotalQuantity"] != null)
-            {
-                TotalQuantity = (int)Session["TotalQuantity"];
-            }
-
-            double TotalPrice = 0;
-            if (Session["TotalPrice"] != null)
-            {
-                TotalPrice = (double)Session["TotalPrice"];
-            }
-
-            Debug.WriteLine("total quanitty " + TotalQuantity);
-            Debug.WriteLine("total price " + TotalPrice);
-
+            return JsonConvert.SerializeObject(hashtable);
         }
 
         public ActionResult ThongTinKhacHang()
@@ -286,124 +150,25 @@ namespace Alithea2.Controllers
                 return Redirect("/BuyItem/Index");
             }
 
-            try
+            var createAt = DateTime.Now;
+
+            if (_shopService.createOrder(Session["buyItem"] as List<Product>, createAt, Session["Customer"] as Customer,
+                (int) Session["TotalQuantity"], (double) Session["TotalPrice"], comment,
+                (Session["UserAccount"] as UserAccount)?.UserID))
             {
-                Customer customer = Session["Customer"] as Customer;
-                if (customer == null)
-                {
-                    return View();
-                }
-
-                DateTime createAt = DateTime.Now;
-                customer.Display();
-                Debug.WriteLine("total quanitty " + Session["TotalQuantity"]);
-                Debug.WriteLine("total price " + Session["TotalPrice"]);
-
-                //Add Order
-                int TotalQuantity = 0;
-                if (Session["TotalQuantity"] != null)
-                {
-                    TotalQuantity = (int)Session["TotalQuantity"];
-                }
-
-                double TotalPrice = 0;
-                if (Session["TotalPrice"] != null)
-                {
-                    TotalPrice = (double)Session["TotalPrice"];
-                }
-
-                int size = 10;
-                string rollnumber = "123";
-                Order getOrder = null;
-                do
-                {
-                    rollnumber = RandomString(size);
-                    Debug.WriteLine("new roll: " + rollnumber);
-                    try
-                    {
-                        getOrder = getOrder = db.Orders.FirstOrDefault(u => u.RoleNumber == rollnumber);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        return Redirect("/Home");
-                    }
-
-                    size++;
-                } while (getOrder != null);
-
-                int? userID = null;
-                if (Session["UserAccount"] != null)
-                {
-                    userID = (Session["UserAccount"] as UserAccount).UserID;
-                }
-
-                Order order = new Order()
-                {
-                    RoleNumber = rollnumber,
-                    OrderDate = createAt,
-                    RequireDate = null,
-                    ShippedDate = null,
-                    Quantity = 0,
-                    TotalPrice = 0,
-                    Status = Order.StatusOrder.DeActive,
-                    UserID = userID,
-                    Commnet = comment,
-                    FullName =  customer.FullName,
-                    Email = customer.Email,
-                    Address = customer.Address,
-                    Phone = customer.Phone
-                };
-                db.Orders.Add(order);
-                order.Display();
-                db.SaveChanges();
-
-                //get OrderId
-                getOrder = db.Orders.FirstOrDefault(o => o.RoleNumber == rollnumber);
-                getOrder.Display();
-
-                var listOrderDetail = new List<OrderDetail>();
-                buyItem.ListProducts = Session["buyItem"] as List<Product>;
-
-                Debug.WriteLine("count: " + buyItem.ListProducts.Count);
-                //Add OrderDetail
-                for (int i = 0; i < buyItem.ListProducts.Count; i++)
-                {
-                    listOrderDetail.Add(new OrderDetail()
-                    {
-                        OrderID = getOrder.OrderID,
-                        ProductID = buyItem.ListProducts[i].ProductID,
-                        Quantity = buyItem.ListProducts[i].Quantity,
-                        UnitPrice = buyItem.ListProducts[i].UnitPrice,
-                        Color = (OrderDetail.ColorProduct?) buyItem.ListProducts[i].Color,
-                        Size = (OrderDetail.SizeProduct?) buyItem.ListProducts[i].Size,
-                    });
-                }
-                db.OrderDetails.AddRange(listOrderDetail);
-
-                //update get Order
-                getOrder.Quantity = TotalQuantity;
-                getOrder.TotalPrice = TotalPrice;
-                db.Entry(getOrder).State = EntityState.Modified;
-
-                db.SaveChanges();
-
-                var result = SendEmail(getOrder.RoleNumber, customer.Email);
+                var result = SendEmail(createAt.ToFileTimeUtc().ToString(), (Session["Customer"] as Customer)?.Email);
                 Debug.WriteLine("result: " + result);
-
+                
                 DeleteSession();
                 TempData["Success"] = "Đặt hàng thành công";
-                TempData["RollNumber"] = rollnumber;
-                TempData["Email"] = getOrder.Email;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("loi roi: " + e.Message);
-                TempData["Error"] = "Đã xảy ra lỗi";
-                return View();
+                TempData["RollNumber"] = createAt.ToFileTimeUtc().ToString();
+                TempData["Email"] = (Session["Customer"] as Customer)?.Email;
+
+                return Redirect("/BuyItem/Success");
             }
 
-            return Redirect("/BuyItem/Success");
+            TempData["Error"] = "Đã xảy ra lỗi";
+            return View();
         }
 
         private string RandomString(int size)
@@ -483,6 +248,13 @@ namespace Alithea2.Controllers
                 Response.Write("Exception in sendEmail:" + ex.Message);
             }
             return Json(result);
+        }
+
+        public class TotalShoppingCart
+        {
+            public int TotalQuantity;
+            public double TotalPrice;
+
         }
     }
 }

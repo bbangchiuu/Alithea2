@@ -1,0 +1,27 @@
+﻿@model Alithea2.Models.Color
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Color</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NameColor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameColor)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ColorID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

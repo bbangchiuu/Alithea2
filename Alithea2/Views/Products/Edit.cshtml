@@ -1,26 +1,22 @@
 ﻿@using Alithea2.Models
+@using Attribute = Alithea2.Models.Attribute
 @model Alithea2.Models.Product
 
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     Dictionary<String, String> errors = new Dictionary<string, string>();
     if (ViewBag.Errors != null)
     {
         errors = ViewBag.Errors as Dictionary<string, string>;
     }
 
-    List<Category> listCategories = new List<Category>();
-    if (ViewBag.listCategories != null)
-    {
-        listCategories = ViewBag.listCategories as List<Category>;
-    }
+    List<Category> listCategories = ViewBag.listCategories as List<Category>;
 
-    List<ProductCategory> listProductCategories = new List<ProductCategory>();
-    if (ViewBag.listProductCategories != null)
-    {
-        listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
-    }
+    List<ProductCategory> listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
+    List<Color> listColors = ViewBag.Colos as List<Color>;
+    var listPro = ViewBag.listPro as List<Attribute>;
 }
 
 
@@ -30,21 +26,20 @@
             <div class="card-body">
                 @if (TempData["Error"] != null)
                 {
-                    <h4 class="text-danger">@TempData["Error"]</h4>
+                    <h4 class="text-danger text-center">@TempData["Error"]</h4>
                 }
-                <h4 class="card-title">Product</h4>
-                <p class="card-description">Edit Product</p>
+                <h4 class="card-title text-center text-primary">Cập nhật sản phẩm</h4>
                 @using (Html.BeginForm())
                 {
                     @Html.AntiForgeryToken()
 
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.HiddenFor(model => model.ProductID)
-                     <div class="form-group">
-                         @Html.LabelFor(model => model.RoleNumber)
-                         @Html.EditorFor(model => model.RoleNumber, new { htmlAttributes = new { @class = "form-control" } })
-                         @Html.ValidationMessageFor(model => model.RoleNumber, errors.ContainsKey("RoleNumber") ? errors["RoleNumber"] : "", new { @class = "text-danger" })
-                     </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoleNumber)
+                        @Html.EditorFor(model => model.RoleNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.RoleNumber, errors.ContainsKey("RoleNumber") ? errors["RoleNumber"] : "", new { @class = "text-danger" })
+                    </div>
                     <div class="form-group">
                         @Html.LabelFor(model => model.ProductName)
                         @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
@@ -72,16 +67,20 @@
                             @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
                             @Html.ValidationMessageFor(model => model.ProductImage, errors.ContainsKey("ProductImage") ? errors["ProductImage"] : "", new { @class = "text-danger" })
                             <div style="margin-top: 5px">
-                                <button type="button" id="upload_widget" class="btn btn-primary">Upload files</button>
+                                <button type="button" id="upload_widget" class="btn btn-primary">Tải ảnh mới</button>
                             </div>
                         </div>
                     </div>
                     <select class="form-control" id="sort">
                         <option value="-1">Danh mục</option>
-                        @for (var i = 0; i < listCategories.Count; i++)
+                        @if (listCategories != null)
                         {
-                            <option value="@listCategories[i].CategoryID">@listCategories[i].CategoryName</option>
+                            for (var i = 0; i < listCategories.Count; i++)
+                            {
+                                <option value="@listCategories[i].CategoryID">@listCategories[i].CategoryName</option>
+                            }
                         }
+
                     </select>
 
                     <div class="form-group" style="margin-top: 20px; margin-bottom: 50px;">
@@ -91,7 +90,7 @@
                             {
                                 <p class="text-danger">@errors["Category"]</p>
                             }
-                            else
+                            else if (listProductCategories != null)
                             {
                                 for (int i = 0; i < listProductCategories.Count; i++)
                                 {
@@ -103,6 +102,45 @@
                             }
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label>Màu</label>
+                        <select class="form-control" id="sortColor">
+                            <option value="-1">Mặc định</option>
+                            @if (listColors != null)
+                            {
+                                foreach (var item in listColors)
+                                {
+                                    <option value="@item.ColorID">@item.NameColor</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="attribute" style="margin-bottom: 50px;">
+                        @if (listPro != null && listPro.Count > 0)
+                        {
+                            for (int i = 0; i < listPro.Count; i++)
+                            {
+                        <div class="form-group" id="color-item-@listPro[i].ColorID">
+                            <input type="hidden" value="@listPro[i].ColorID" />
+                            <p>@listPro[i].Color.NameColor<i class="mdi mdi-backspace" onclick="colorPro(@listPro[i].ColorID)" style="margin-left: 10px;"></i></p>
+                            <label>Ảnh</label><br />
+                            <img src="@listPro[i].ProductImage" id="preview-@listPro[i].ColorID" class="img-thumbnail imageProduct" style="width: 100px" alt="Alternate Text" />
+                            <input type="hidden" name="imageColor" value="default" id="valueImg-@listPro[i].ColorID" />
+                            <div style="margin-top: 5px">
+                                <button type="button" class="btn btn-primary" onclick="uploadImage(@listPro[i].ColorID)">Upload files</button>
+                            </div>
+                            <label style="margin-top: 20px;">Giá</label>
+                            <input class="form-control" name="priceColor" type="number" value="@listPro[i].UnitPrice">
+
+                            <label style="margin-top: 20px;">Số lượng</label>
+                            <input class="form-control" name="quanityColor" type="number" value="@listPro[i].Quantity">
+                        </div>
+                             }
+                        }
+                    </div>
+
                     <div class="form-group hidden">
                         @Html.LabelFor(model => model.CreatedAt, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
@@ -122,7 +160,7 @@
                         Xóa sản phẩm
                     </button>
                     <a class="btn btn-light" href="@Url.Action("Index")">
-                        Cancel
+                        Hủy
                     </a>
                 }
             </div>
@@ -165,6 +203,11 @@
             $(idDiv).remove();
         }
 
+        function colorPro(item) {
+            var idDiv = "#color-item-" + item;
+            $(idDiv).remove();
+        }
+
         $(document).ready(function () {
             $("#sort").change(function () {
                 console.log($(this).val() + " - " + $("#sort option:selected").text());
@@ -177,25 +220,69 @@
                     $("#listCat").append(text);
                 }
             });
+
+            $('#sortColor').change(function () {
+                if ($(this).val() > 0) {
+                    var unitpice = $('input[name="UnitPrice"]').val();
+                    var quanitty = $('input[name="Quantity"]').val();
+                    if (unitpice === '') {
+                        unitpice = 0;
+                    }
+                    if (quanitty === '') {
+                        quanitty = 0;
+                    }
+
+                    var text = '<div class="form-group" id="color-item-' + $(this).val() + '">' +
+                        '<input type="hidden" value="' + $(this).val() + '" name="idColor">' +
+                        '<p>' + $("#sortColor option:selected").text() + '<i class="mdi mdi-backspace" onclick="colorPro(' + $(this).val() + ')" style="margin-left: 10px;"></i></p>' +
+
+                        '<label>Ảnh</label><br/>' +
+                        '<img src="#" id="preview-' + $(this).val() + '" class="hidden img-thumbnail imageProduct" style="width: 100px" alt="Alternate Text" />' +
+                        '<input type="hidden" name="imageColor" value="default" id="valueImg-' + $(this).val() + '"/>' +
+                        '<div style="margin-top: 5px">' +
+                        '<button type="button" class="btn btn-primary" onclick="uploadImage(' + $(this).val() + ')">Upload files</button>' +
+                        '</div>' +
+
+                        '<label style="margin-top: 20px;">Giá</label>' +
+                        '<input class="form-control" name="priceColor" type="number" value="' + unitpice + '">' +
+
+                        '<label style="margin-top: 20px;">Số lượng</label>' +
+                        '<input class="form-control" name="quanityColor" type="number" value="' + quanitty + '">' +
+
+                        '</div>';
+
+                    $('#attribute').append(text);
+                }
+            });
         });
     </script>
     <script type="text/javascript">
-        var myWidget = cloudinary.createUploadWidget({
-            cloudName: 'bangnguyen',
-            uploadPreset: 'Alithea'
-        }, (error, result) => {
-            if (!error && result && result.event === "success") {
-                var imgLink = result.info.secure_url;
-                document.querySelector("input[name='ProductImage']").value = imgLink;
-                var imgPreview = document.getElementById("preview");
-                imgPreview.src = imgLink;
-                imgPreview.classList.remove("hidden");
-            }
-        }
-        )
+        var imgPreID = "#preview-0";
+        var valueImgId = "#valueImg-0";
 
-        document.getElementById("upload_widget").addEventListener("click", function () {
+        function uploadImage(item) {
+            imgPreID = "#preview-" + item;
+            valueImgId = "#valueImg-" + item;
+            console.log("item: " + item);
             myWidget.open();
-        }, false);
+        }
+
+        var myWidget = cloudinary.createUploadWidget({
+                cloudName: 'bangnguyen',
+                uploadPreset: 'Alithea'
+            },
+            (error, result) => {
+                if (!error && result && result.event === "success") {
+                    var imgLink = result.info.secure_url;
+                 
+                    $(valueImgId).val(imgLink);
+
+                    var imgPre = $(imgPreID);
+                    imgPre.attr("src", imgLink);
+                    imgPre.removeClass("hidden");
+                }
+            }
+        );
+
     </script>
 }

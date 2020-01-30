@@ -1,0 +1,27 @@
+﻿@model Alithea2.Models.Size
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Size</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NameSize)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameSize)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.SizeID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

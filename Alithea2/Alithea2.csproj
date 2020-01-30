@@ -147,23 +147,30 @@
     <Compile Include="Controllers\Api\UserAccountsController.cs" />
     <Compile Include="Controllers\BuyItemController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\ColorsController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderDetailsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductCategoriesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\Respository\AttributeManager\AttributeRepository.cs" />
     <Compile Include="Controllers\Respository\BaseRepository.cs" />
     <Compile Include="Controllers\Respository\CategoryManager\CategoryRepository.cs" />
     <Compile Include="Controllers\Respository\IBaseRepository.cs" />
+    <Compile Include="Controllers\Respository\OrderManager\OrderRespository.cs" />
     <Compile Include="Controllers\Respository\ProductCategoryManager\ProductCategoryRepository.cs" />
     <Compile Include="Controllers\Respository\ProductManager\ProductRepository.cs" />
+    <Compile Include="Controllers\Service\AttributeManager\AttributeService.cs" />
     <Compile Include="Controllers\Service\BaseService.cs" />
     <Compile Include="Controllers\Service\CategoryManager\CategoryService.cs" />
     <Compile Include="Controllers\Service\IBaseService.cs" />
+    <Compile Include="Controllers\Service\OrderManager\OrderService.cs" />
     <Compile Include="Controllers\Service\ProductCateogryManager\ProductCategoryService.cs" />
     <Compile Include="Controllers\Service\ProductManager\ProductService.cs" />
     <Compile Include="Controllers\Service\ShopManager\ShopService.cs" />
+    <Compile Include="Controllers\ShopController.cs" />
+    <Compile Include="Controllers\SizesController.cs" />
     <Compile Include="Controllers\UserAccountsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -200,12 +207,26 @@
     <Compile Include="Migrations\202001121320394_ahirfdgsdfs.Designer.cs">
       <DependentUpon>202001121320394_ahirfdgsdfs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001200158413_add_attribute.cs" />
+    <Compile Include="Migrations\202001200158413_add_attribute.Designer.cs">
+      <DependentUpon>202001200158413_add_attribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001221649223_updateAttribute.cs" />
+    <Compile Include="Migrations\202001221649223_updateAttribute.Designer.cs">
+      <DependentUpon>202001221649223_updateAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001291639008_addOderDetailAttr.cs" />
+    <Compile Include="Migrations\202001291639008_addOderDetailAttr.Designer.cs">
+      <DependentUpon>202001291639008_addOderDetailAttr.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attribute.cs" />
     <Compile Include="Models\BuyItem.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Color.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\OrderDetail.cs" />
+    <Compile Include="Models\Size.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\MyDbContext.cs" />
     <Compile Include="Models\Order.cs" />
@@ -2446,10 +2467,24 @@
     <Content Include="Views\OrderDetails\Details.cshtml" />
     <Content Include="Views\OrderDetails\Edit.cshtml" />
     <Content Include="Views\OrderDetails\Index.cshtml" />
+    <Content Include="Views\Colors\Create.cshtml" />
+    <Content Include="Views\Colors\Delete.cshtml" />
+    <Content Include="Views\Colors\Details.cshtml" />
+    <Content Include="Views\Colors\Edit.cshtml" />
+    <Content Include="Views\Colors\Index.cshtml" />
+    <Content Include="Views\Sizes\Create.cshtml" />
+    <Content Include="Views\Sizes\Delete.cshtml" />
+    <Content Include="Views\Sizes\Details.cshtml" />
+    <Content Include="Views\Sizes\Edit.cshtml" />
+    <Content Include="Views\Sizes\Index.cshtml" />
+    <Content Include="Views\Shop\QuanAoNam.cshtml" />
+    <Content Include="Views\Shop\QuanAoNu.cshtml" />
+    <Content Include="Views\Shop\GiayNam.cshtml" />
+    <Content Include="Views\Shop\GiayNu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\Service\NewFolder1\" />
+    <Folder Include="Controllers\Respository\ShopManager\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -2491,6 +2526,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001121320394_ahirfdgsdfs.resx">
       <DependentUpon>202001121320394_ahirfdgsdfs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001200158413_add_attribute.resx">
+      <DependentUpon>202001200158413_add_attribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001221649223_updateAttribute.resx">
+      <DependentUpon>202001221649223_updateAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001291639008_addOderDetailAttr.resx">
+      <DependentUpon>202001291639008_addOderDetailAttr.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

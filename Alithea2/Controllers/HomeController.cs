@@ -7,36 +7,31 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Alithea2.Controllers.Service.AttributeManager;
+using Alithea2.Controllers.Service.CategoryManager;
+using Alithea2.Controllers.Service.ProductCateogryManager;
+using Alithea2.Controllers.Service.ProductManager;
+using Alithea2.Controllers.Service.ShopManager;
 using Alithea2.Models;
 using LinqKit;
+using Attribute = System.Attribute;
 
 namespace Alithea2.Controllers
 {
     public class HomeController : Controller
     {
         private MyDbContext db = new MyDbContext();
+        private CategoryService _categoryService = new CategoryService();
+        private ProductService _productService = new ProductService();
+        private ShopService _shopService = new ShopService();
+        private ProductCategoryService _productCategoryService = new ProductCategoryService();
+        private AttributeService _attributeService = new AttributeService();
 
         public ActionResult Index()
         {
-            List<ProductCategory> listProNam = new List<ProductCategory>();
-            List<ProductCategory> listProNu = new List<ProductCategory>();
-            List<ProductCategory> listGiayNam = new List<ProductCategory>();
-            List<ProductCategory> listGiayNu = new List<ProductCategory>();
-
-            List<Category> listCategories = new List<Category>();
             try
             {
-                listProNam = db.ProductCategories.Where(pc => pc.CategoryID == 1).Take(4).ToList();
-                listProNu = db.ProductCategories.Where(pc => pc.CategoryID == 2).Take(4).ToList();
-                listGiayNam = db.ProductCategories.Where(pc => pc.CategoryID == 4).Take(4).ToList();
-                listGiayNu = db.ProductCategories.Where(pc => pc.CategoryID == 5).Take(4).ToList();
-                listCategories = db.Categories.Take(3).ToList();
-
-                ViewBag.listProNam = listProNam;
-                ViewBag.listProNu = listProNu;
-                ViewBag.listGiayNam = listGiayNam;
-                ViewBag.listGiayNu = listGiayNu;
-                ViewBag.listCategories = listCategories;
+                ViewBag.listCategories = db.Categories.Take(3).ToList();
             }
             catch (Exception e)
             {
@@ -45,7 +40,7 @@ namespace Alithea2.Controllers
             return View();
         }
 
-        public ActionResult Search(string productname)
+        public ActionResult Search(string productname, int? page, int? limit)
         {
             ViewBag.productname = productname;
 
@@ -54,10 +49,28 @@ namespace Alithea2.Controllers
                 return Redirect("/Home");
             }
 
+            if (page == null)
+            {
+                page = 1;
+            }
+
+            if (limit == null)
+            {
+                limit = 6;
+            }
+
             try
             {
-                ViewBag.searchProduct = db.Products.Where(p => p.ProductName.Contains(productname)).ToList();
-                ViewBag.listCategories = db.Categories.ToList();
+                var productFilter = db.Products.Where(p => p.ProductName.Contains(productname)).ToList();
+
+                ViewBag.TotalPage = Math.Ceiling((double)productFilter.Count() / limit.Value);
+                ViewBag.CurrentPage = page;
+                ViewBag.limit = limit;
+
+                ViewBag.productFilter = productFilter.OrderByDescending(p => p.ProductName).Skip((page.Value - 1) * limit.Value).Take(limit.Value).ToList();
+                ViewBag.listCategories = _categoryService.GetAll().ToList(); 
+                ViewBag.currentPara = "?productname=" + productname + "&";
+
             }
             catch (Exception e)
             {
@@ -66,94 +79,43 @@ namespace Alithea2.Controllers
             return View("Filter");
         }
 
-        public ActionResult Filter(int? id)
+        public ActionResult Filter(List<int> id, int? page, int? limit, double? MinPrice, double? MaxPrice)
         {
-            if (id == null)
+            if (page == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                page = 1;
             }
 
-            try
+            if (limit == null)
             {
-                ViewBag.categoryFilter = db.Categories.Where(c => c.CategoryID == id).ToList();
-                ViewBag.listCategories = db.Categories.ToList();
-                ViewBag.listProductCategories = db.ProductCategories.Where(pc => pc.CategoryID == id).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Filter(List<int> idCat, int? price)
-        {
-            var categoryFilter = new List<Category>();
-            var listProductCategories = db.ProductCategories.ToList();
-
-            if (price != null)
-            {
-                if (price == 1)
-                {
-                    listProductCategories = listProductCategories.Where(pc => pc.Product.UnitPrice <= 150000).ToList();
-                    ViewBag.PriceFilter = "<= 150.000";
-                }else if (price == 2)
-                {
-                    listProductCategories = listProductCategories.Where(pc => pc.Product.UnitPrice >= 150000 && pc.Product.UnitPrice <= 500000).ToList();
-                    ViewBag.PriceFilter = "150.000 - 500.000";
-                }
-                else if (price == 3)
-                {
-                    listProductCategories = listProductCategories.Where(pc => pc.Product.UnitPrice >= 500000 && pc.Product.UnitPrice <= 1000000).ToList();
-                    ViewBag.PriceFilter = "500.000 - 1.000.000";
-                }
-                else if (price == 4)
-                {
-                    listProductCategories = listProductCategories.Where(pc => pc.Product.UnitPrice > 1000000).ToList();
-                    ViewBag.PriceFilter = ">= 1.000.000";
-                }
-
+                limit = 6;
             }
 
-            if (idCat != null)
+            if (id == null && MinPrice == null && MaxPrice == null)
             {
-                var predicate = PredicateBuilder.New<ProductCategory>();
-
-                try
-                {
-                    for (int i = 0; i < idCat.Count; i++)
-                    {
-                        Debug.WriteLine("catid: " + idCat[i]);
-                        int CatId = idCat[i];
-                        predicate = predicate.Or(pc => pc.CategoryID == CatId);
-                        categoryFilter.Add(db.Categories.Find(CatId));
-                    }
-
-                    listProductCategories = listProductCategories.Where(predicate.Compile()).Select(pc => pc)
-                        .GroupBy(pc => pc.ProductID).Where(pc => pc.Count() >= idCat.Count).Select(pc => pc.FirstOrDefault()).ToList();
-
-                    for (int i = 0; i < listProductCategories.Count; i++)
-                    {
-                        Debug.WriteLine("name: " + listProductCategories[i].Product.ProductName);
-                    }
-
-                    ViewBag.categoryFilter = categoryFilter;
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                }
+                ViewBag.productFilter = _productService.listPagination(page, limit);
+                ViewBag.TotalPage = Math.Ceiling((double)_productService.GetAll().Count() / limit.Value);
+                ViewBag.currentPara = "?";
             }
             else
             {
-                listProductCategories = listProductCategories.Select(pc => pc).GroupBy(pc => pc.ProductID).Select(pc => pc.FirstOrDefault()).ToList();
+                var hashtable = _shopService.FilterProduct(id, page.Value, limit.Value, MinPrice, MaxPrice);
+
+                ViewBag.categoryFilter = hashtable["listCategory"];
+                ViewBag.productFilter = hashtable["listProduct"];
+
+                ViewBag.TotalPage = hashtable["totalPage"];
+                ViewBag.currentPara = hashtable["currentPara"];
             }
 
-            ViewBag.listProductCategories = listProductCategories;
-            ViewBag.listCategories = db.Categories.ToList();
+            ViewBag.listCategories = _categoryService.GetAll().ToList();
 
+            ViewBag.CurrentPage = page;
+            ViewBag.limit = limit;
+          
+            ViewBag.MinPrice = MinPrice;
+            ViewBag.MaxPrice = MaxPrice;
+         
             return View();
         }
 
@@ -164,22 +126,11 @@ namespace Alithea2.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //------------------------
-            Product product = new Product();
-            List<ProductCategory> listProductCategories = new List<ProductCategory>();
-            try
-            {
-                product = db.Products.Find(id);
-                if (product == null)
-                {
-                    return HttpNotFound();
-                }
-                listProductCategories = db.ProductCategories.Where(pc => pc.ProductID == id).ToList();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("error: " + e.Message);
-            }
-            ViewBag.listProductCategories = listProductCategories;
+            var product = _productService.SelectById(id);
+            ViewBag.listProductCategories = _productCategoryService.GetCategories(id);
+            ViewBag.productAttribute = _attributeService.GetAttributesOfProduct(id);
+            ViewBag.Size = db.Sizes.ToList();
+
             return View(product);
         }
 
@@ -378,9 +329,25 @@ namespace Alithea2.Controllers
             return sb.ToString();
         }
 
-        public ActionResult ListCategory()
+        public ActionResult ListCategory(int? page, int? limit)
         {
-            return View(db.Categories.ToList());
+            if (page == null)
+            {
+                page = 1;
+            }
+
+            if (limit == null)
+            {
+                limit = 9;
+            }
+
+            var listCategories = _categoryService.listPagination(page, limit);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.limit = limit;
+            ViewBag.TotalPage = Math.Ceiling((double)_categoryService.GetAll().Count() / limit.Value);
+
+            return View(listCategories);
         }
 
         public ActionResult DeleteSessionUser()

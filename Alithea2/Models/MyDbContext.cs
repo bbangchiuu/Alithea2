@@ -24,5 +24,11 @@ namespace Alithea2.Models
         public System.Data.Entity.DbSet<Alithea2.Models.Order> Orders { get; set; }
 
         public System.Data.Entity.DbSet<Alithea2.Models.OrderDetail> OrderDetails { get; set; }
+
+        public System.Data.Entity.DbSet<Alithea2.Models.Color> Colors { get; set; }
+
+        public System.Data.Entity.DbSet<Alithea2.Models.Size> Sizes { get; set; }
+
+        public System.Data.Entity.DbSet<Alithea2.Models.Attribute> Attributes { get; set; }
     }
 }

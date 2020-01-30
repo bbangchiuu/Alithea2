@@ -96,4 +96,7 @@ E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\bin\System.Web.Http.WebHost.dll
 E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\bin\System.Net.Http.Formatting.xml
 E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\bin\System.Web.Http.xml
 E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\bin\System.Web.Http.WebHost.xml
+E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\obj\Debug\Alithea2.Migrations.add_attribute.resources
+E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\obj\Debug\Alithea2.Migrations.updateAttribute.resources
 E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\obj\Debug\Alithea2.csprojAssemblyReference.cache
+E:\dotNet_MVC\Alithea2\Alithea2\Alithea2\obj\Debug\Alithea2.Migrations.addOderDetailAttr.resources

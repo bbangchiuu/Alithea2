@@ -60,19 +60,5 @@ namespace Alithea2.Controllers.Service
             _baseRepo.Save();
         }
 
-        public DbContextTransaction BeginTransaction()
-        {
-            return _baseRepo.BeginTransaction();
-        }
-
-        public void CommitTransaction()
-        {
-            _baseRepo.CommitTransaction();
-        }
-
-        public void RollBackTransaction()
-        {
-            _baseRepo.RollBackTransaction();
-        }
     }
 }

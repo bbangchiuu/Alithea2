@@ -3,32 +3,16 @@
 @{
     ViewBag.Title = "Filter";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    List<Category> listCategories = new List<Category>();
-    List<ProductCategory> listProductCategories = new List<ProductCategory>();
-    List<Category> categoryFilter = null;
-    List<Product> listProducts = new List<Product>();
-    if (ViewBag.listCategories != null)
-    {
-        listCategories = ViewBag.listCategories as List<Category>;
-    }
-    if (ViewBag.listProductCategories != null)
-    {
-        listProductCategories = ViewBag.listProductCategories as List<ProductCategory>;
-    }
-    if (ViewBag.categoryFilter != null)
-    {
-        categoryFilter = ViewBag.categoryFilter;
-    }
-    if (ViewBag.searchProduct != null)
-    {
-        listProducts = ViewBag.searchProduct as List<Product>;
-    }
+    var listCategories = ViewBag.listCategories as List<Category>;
 
-    string priceFilter = null;
-    if (ViewBag.PriceFilter != null)
-    {
-        priceFilter = ViewBag.PriceFilter;
-    }
+    var productFilter = ViewBag.productFilter;
+    var categoryFilter = ViewBag.categoryFilter;
+
+    var totalPage = ((int?) ViewBag.TotalPage).Value;
+    var currentPage = ((int?) ViewBag.CurrentPage).Value;
+    var limit = ((int?) ViewBag.Limit).Value;
+
+    var currentPara = ViewBag.currentPara;
 }
     <div class="detail12">
         <div class="container">
@@ -42,8 +26,9 @@
                             {
                                 for (int i = 0; i < categoryFilter.Count; i++)
                                 {
+                                    Category category = categoryFilter[i] as Category;
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        @categoryFilter[i].CategoryName
+                                        @category.CategoryName
                                     </li>
                                 }
                             }
@@ -51,18 +36,27 @@
 
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Giá</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                @if (ViewBag.MinPrice != null)
+                                {
+                                    <span>@string.Format("{0:C}", ViewBag.MinPrice)</span>
+                                }
+                                else if (ViewBag.MaxPrice != null)
+                                {
+                                    <span>@string.Format("{0:C}", 0)</span>
+                                }
 
-                            @if (priceFilter != null)
-                            {
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    @priceFilter
-                                </li>
-                            }
+                                @if (ViewBag.MaxPrice != null)
+                                {
+                                    <span>-></span>
+                                    <span>@string.Format("{0:C}", ViewBag.MaxPrice)</span>
+                                }
+                            </li>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-sm-3 ">
-                @using (Html.BeginForm("Filter", "Home", FormMethod.Post))
+                @using (Html.BeginForm("Filter", "Home", FormMethod.Get))
                 {
                     @Html.AntiForgeryToken()
                 <div class="col-sm-12">
@@ -73,60 +67,14 @@
                             </p>
                             <hr>
                             <div class="block1">
-                                <ul>
-                                    <li class="wow bounceIn" data-wow-delay="0.2">
-                                        <input class="inputcheck" id="checkbox1" name="price" type="radio"
-                                               value="1" style="display: none;" />
-                                        <label class="checkbox" for="checkbox1">
-                                            <span>
-                                                <div width="12px" height="10px"></div>
-                                            </span>
-                                            <span>
-                                                <= 150.000đ
-                                            </span>
-                                        </label>
-                                    </li>
-                                    <hr>
-                                    <li class="wow bounceIn" data-wow-delay="0.3">
-                                        <input class="inputcheck" id="checkbox2" name="price" value="2" type="radio"
-                                               style="display: none;" />
-                                        <label class="checkbox" for="checkbox2">
-                                            <span>
-                                                <div width="12px" height="10px">
-
-                                                </div>
-                                            </span>
-                                            <span>150.000 đ - 500.000 đ</span>
-                                        </label>
-
-                                    </li>
-                                    <hr>
-                                    <li class="wow bounceIn" data-wow-delay="0.4">
-                                        <input class="inputcheck" id="checkbox3" type="radio" name="price"
-                                               value="3" style="display: none;" />
-                                        <label class="checkbox" for="checkbox3">
-                                            <span>
-                                                <div width="12px" height="10px">
-                                                </div>
-                                            </span>
-                                            <span>500.000 đ - 1.000.000 đ</span>
-                                        </label>
-                                    </li>
-                                    <hr>
-                                    <li class="wow bounceIn" data-wow-delay="0.5">
-                                        <input class="inputcheck" id="checkbox4" name="price" value="4" type="radio"
-                                               style="display: none;" />
-                                        <label class="checkbox" for="checkbox4">
-                                            <span>
-                                                <div width="12px" height="10px">
-
-                                                </div>
-                                            </span>
-                                            <span> > 1000.000 đ</span>
-                                        </label>
-                                    </li>
-                                    <hr>
-                                </ul>
+                                <div class="form-group">
+                                    <label>Giá thấp nhất</label>
+                                    <input class="form-control" type="number" name="MinPrice" value="@ViewBag.MinPrice"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá cao nhất</label>
+                                    <input class="form-control" type="number" name="MaxPrice" value="@ViewBag.MaxPrice"/>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-12 block1 box">
@@ -151,7 +99,18 @@
                                 </select>
                             </div>
                             <div class="col-md-10" id="listCat">
-
+                                @if (categoryFilter != null)
+                                {
+                                    for (int i = 0; i < categoryFilter.Count; i++)
+                                    {
+                                        Category category = categoryFilter[i] as Category;
+                                        <div class="badge badge-info" id="item-@category.CategoryID">
+                                            <input type="hidden" name="id" value="@category.CategoryID" />
+                                            @category.CategoryName
+                                            <span class="glyphicon glyphicon-remove" onclick="delCate(@category.CategoryID)" style="margin-left: 10px;">X</span>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-sm-12 m-b-30 wow bounceIn" data-wow-delay="0.2">
@@ -170,86 +129,89 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="row">
-                                @if (listProductCategories != null && listProductCategories.Count > 0)
+                                @if (productFilter != null && productFilter.Count > 0)
                                 {
-                                    for (int i = 0; i < listProductCategories.Count; i++)
+                                    for (int i = 0; i < productFilter.Count; i++)
                                     {
-                                        <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
-                                            <a href="#">
-                                                <div class="card col-sm-12 box a-product" style="width: 18rem;">
-                                                    <div class="card-img">
-                                                        <img src="@listProductCategories[i].Product.ProductImage" class="card-img-top" alt="...">
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="card-body">
-                                                            <p class="card-title text-center">
-                                                                @listProductCategories[i].Product.ProductName
-                                                            </p>
-                                                            <div class="card-text text-center">
-                                                                <p>
-                                                                    <strong class="price-zone">
-                                                                    @string.Format("{0:C}", listProductCategories[i].Product.UnitPrice)
+                                        Product product = productFilter[i] as Product;
+                                <a href="/Home/Details/@product.ProductID">
+                                    <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
 
-                                                                    </strong>
-                                                                </p>
-                                                            </div>
-                                                            <div class="row text-center col-md-6 offset-md-3">
-                                                                <a href="/Home/Details/@listProductCategories[i].ProductID">
-                                                                    <button type="submit" class="btn btn-primary kieu2 col-sm-12">
-                                                                       Đặt hàng
-                                                                    </button>
-                                                                </a>
-                                                            </div>
-                                                        </div>
+                                        <div class="card col-sm-12 box a-product" style="width: 18rem;">
+                                            <div class="card-img">
+                                                <img src="@product.ProductImage" class="card-img-top" alt="...">
+                                            </div>
+                                            <div class="row">
+                                                <div class="card-body">
+                                                    <p class="card-title text-center">
+                                                        @product.ProductName
+                                                    </p>
+                                                    <div class="card-text text-center">
+                                                        <p>
+                                                            <strong class="price-zone">
+                                                                @string.Format("{0:C}", product.UnitPrice)
+                                                            </strong>
+                                                        </p>
+                                                    </div>
+                                                    <div class="row text-center col-md-6 offset-md-3">
+                                                        <a href="/Home/Details/@product.ProductID">
+                                                            <button type="submit" class="btn btn-primary kieu2 col-sm-12">
+                                                                Đặt hàng
+                                                            </button>
+                                                        </a>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </div>
                                         </div>
-                                    }
-                                }
-                                @if (listProducts != null && listProducts.Count > 0)
-                                {
-                                    for (int i = 0; i < listProducts.Count; i++)
-                                    {
-                                        <div class="col-sm-4 m-b-30 wow bounceIn" data-wow-delay="1ms">
-                                            <a href="#">
-                                                <div class="card col-sm-12 box a-product" style="width: 18rem;">
-                                                    <div class="card-img">
-                                                        <img src="@listProducts[i].ProductImage" class="card-img-top" alt="...">
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="card-body">
-                                                            <p class="card-title text-center">
-                                                                @listProducts[i].ProductName
-                                                            </p>
-                                                            <div class="card-text text-center">
-                                                                <p>
-                                                                    <strong class="price-zone">
-                                                                        @string.Format("{0:C}", listProducts[i].UnitPrice)
-                                                                    </strong>
-                                                                </p>
-                                                            </div>
-                                                            <div class="row text-center col-md-6 offset-md-3">
-                                                                <a href="/Home/Details/@listProducts[i].ProductID">
-                                                                    <button type="submit" class="btn btn-primary kieu2 col-sm-12">
-                                                                        Đặt hàng
-                                                                    </button>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
+                                    </div>
+                                </a>
                                     }
                                 }
                             </div>
+                            @if (totalPage > 0)
+                            {
+                                <nav aria-label="...">
+                                    <ul class="pagination">
+                                        @if (currentPage > 1)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@(currentPara)page=@(currentPage-1)&limit=@(limit)"><span aria-hidden="true">&laquo;</span></a>
+                                            </li>
+                                        }
+                                        @if (currentPage > 2)
+                                        {
+                                            <li class="page-item"><a class="page-link" href="@(currentPara)page=@(currentPage-2)&limit=@(limit)">@(currentPage - 2)</a></li>
+                                        }
+                                        @if (currentPage > 1)
+                                        {
+                                            <li class="page-item"><a class="page-link" href="@(currentPara)page=@(currentPage-1)&limit=@(limit)">@(currentPage - 1)</a></li>
+                                        }
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#">@currentPage<span class="sr-only">(current)</span></a>
+                                        </li>
+                                        @if (totalPage - currentPage > 0)
+                                        {
+                                            <li class="page-item"><a class="page-link" href="@(currentPara)page=@(currentPage+1)&limit=@(limit)">@(currentPage + 1)</a></li>
+                                        }
+                                        @if (totalPage - currentPage > 1)
+                                        {
+                                            <li class="page-item"><a class="page-link" href="@(currentPara)page=@(currentPage+2)&limit=@(limit)">@(currentPage + 2)</a></li>
+                                        }
+                                        @if (totalPage - currentPage > 0)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@(currentPara)page=@(currentPage+2)&limit=@(limit)"><span aria-hidden="true">&raquo;</span></a>
+                                            </li>
+                                        }
+
+                                    </ul>
+                                </nav>
+                            }
                         </div>
 
                     </div>
                 </div>
-
-    </div>
+            </div>
     </div>
     @section Scripts {
         <script>
@@ -267,7 +229,7 @@
                     console.log($(this).val());
                     console.log($(this).val() > 0);
                     if ($(this).val() > 0) {
-                        var text = '<div class="badge badge-info" id="item-' + $(this).val() + '"><input type="hidden" name="idCat" value="' + $(this).val() + '" />' + $("#exampleFormControlSelect1 option:selected").text() + '<span class="glyphicon glyphicon-remove" onclick="delCate(' + $(this).val() + ')" style="margin-left: 10px;">X</span></div>';
+                        var text = '<div class="badge badge-info" id="item-' + $(this).val() + '"><input type="hidden" name="id" value="' + $(this).val() + '" />' + $("#exampleFormControlSelect1 option:selected").text() + '<span class="glyphicon glyphicon-remove" onclick="delCate(' + $(this).val() + ')" style="margin-left: 10px;">X</span></div>';
                         $("#listCat").append(text);
                     }
                 });

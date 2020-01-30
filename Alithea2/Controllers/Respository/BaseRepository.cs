@@ -13,13 +13,10 @@ namespace Alithea2.Controllers.Respository
         protected MyDbContext _db { get; set; }
         protected DbSet<T> _table = null;
 
-        //protected DbContextTransaction _dbContextTransaction { get; set; }
-
         public BaseRepository()
         {
             _db = new MyDbContext();
             _table = _db.Set<T>();
-            //_dbContextTransaction = _db.Database.BeginTransaction();
         }
 
         public BaseRepository(MyDbContext db)
@@ -65,21 +62,6 @@ namespace Alithea2.Controllers.Respository
         public void Save()
         {
             _db.SaveChanges();
-        }
-
-        public DbContextTransaction BeginTransaction()
-        {
-            return _db.Database.CurrentTransaction;
-        }
-
-        public void CommitTransaction()
-        {
-            _db.Database.CurrentTransaction.Commit();
-        }
-
-        public void RollBackTransaction()
-        {
-            _db.Database.CurrentTransaction.Rollback();
         }
     }
 }

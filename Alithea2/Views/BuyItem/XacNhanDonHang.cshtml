@@ -19,17 +19,17 @@
 }
 
 <div class="detail8">
-    <div class="container m-t-50">
-        <div>
+    <div class="container">
+        <div class="m-t-150">
             @if (TempData["Error"] != null)
             {
-                <h2 class="text-center title-block wow bounceIn m-t-100 text-danger" data-wow-delay="0.1s" data-wow-offset="50">
+                <h2 class="text-center title-block wow bounceIn text-danger"data-wow-delay="0.1s" data-wow-offset="50">
                     @TempData["Error"]
                 </h2>
             }
         </div>
         <div class="row mb-3">
-            <div class="col-sm-12 m-t-150 dsxacnhanorder">
+            <div class="col-sm-12 dsxacnhanorder">
                 <div class="dsxacnhanorder-list float-left daxacnhanorder divfirst">
                     <a href="/BuyItem/Index">1.Sản phẩm đã chọn</a>
                 </div>
@@ -78,29 +78,10 @@
 
                                     </td>
                                     <td>
-                                        @if (val.Color == Product.ColorProduct.color_Green)
-                                        {
-                                            <button type="button" class="btn btn-success">Xanh lá cây</button>
-                                        }
-                                        else if (val.Color == Product.ColorProduct.color_Blue)
-                                        {
-                                            <button type="button" class="btn btn-primary">Xanh</button>
-                                        }
-                                        else if (val.Color == Product.ColorProduct.color_Yellow)
-                                        {
-                                            <button type="button" class="btn btn-warning">Vàng</button>
-                                        }
-                                        else if (val.Color == Product.ColorProduct.color_Red)
-                                        {
-                                            <button type="button" class="btn btn-danger">Đỏ</button>
-                                        }
-                                        else
-                                        {
-                                            <strong>Mặc định</strong>
-                                        }
+                                        @val.NameColor
                                     </td>
                                     <td>
-                                        @val.Size
+                                        @val.NameSize
                                     </td>
                                 </tr>
                             }
@@ -148,8 +129,8 @@
                             @customer.Phone
                         </div>
                     </div>
-                    <p class="sangbenphai" id="total_price">
-                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: @string.Format("{0:C}", @Session["TotalPrice"])</a>
+                    <p class="sangbenphai">
+                        <a href="#" class="btn btn-danger btn-block p-30 nut-checkout">Tổng tiền: <span id="total_price">@string.Format("{0:C}", @Session["TotalPrice"])</span></a>
                     </p>
                 </div>
             </div>

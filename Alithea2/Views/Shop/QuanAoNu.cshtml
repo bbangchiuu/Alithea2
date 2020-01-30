@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Alithea2.Models.ProductCategory>
+
+@for (int i = 0; i < Model.Count(); i++)
+{
+    <div class="col-sm-3 float-left">
+        <a href="/Home/Details/@Model.ElementAt(i).ProductID">
+            <div class=" wow bounceIn" data-wow-delay="1ms">
+                <div class="grid__item  product-item">
+                    <div class="grid__image">
+                        <img class="anhthem1" src="@Model.ElementAt(i).Product.ProductImage">
+                        <img class="anhthem2" src="@Model.ElementAt(i).Product.ProductImage">
+                    </div>
+                    <form action="" class="variants AddToCartForm">
+                        <h3 class="h6">
+                            <a href="">
+                                @Model.ElementAt(i).Product.ProductName
+                            </a>
+                        </h3>
+                        <div class="price">
+                            <span class="product-price">
+                                @string.Format("{0:C}", Model.ElementAt(i).Product.UnitPrice)
+
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </a>
+    </div>
+}

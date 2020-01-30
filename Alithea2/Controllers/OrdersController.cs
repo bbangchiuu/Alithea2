@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Alithea2.Controllers.Service.OrderManager;
 using Alithea2.Models;
 using Microsoft.Ajax.Utilities;
 
@@ -15,7 +16,7 @@ namespace Alithea2.Controllers
     public class OrdersController : Controller
     {
         private MyDbContext db = new MyDbContext();
-
+        private OrderService _orderService = new OrderService();
         public bool CheckUser()
         {
 
@@ -43,10 +44,10 @@ namespace Alithea2.Controllers
         // GET: Orders
         public ActionResult Index(int? page, int? limit, string start, string end)
         {
-            if (!CheckUser())
-            {
-                return Redirect("/Home/Login");
-            }
+//            if (!CheckUser())
+//            {
+//                return Redirect("/Home/Login");
+//            }
 
             if (page == null)
             {
@@ -123,10 +124,10 @@ namespace Alithea2.Controllers
         // GET: Orders/Details/5
         public ActionResult Details(int? id)
         {
-            if (!CheckUser())
-            {
-                return Redirect("/Home/Login");
-            }
+//            if (!CheckUser())
+//            {
+//                return Redirect("/Home/Login");
+//            }
 
             if (id == null)
             {
@@ -135,7 +136,7 @@ namespace Alithea2.Controllers
             Order order = new Order();
             try
             {
-                order = db.Orders.Find(id);
+                order = _orderService.SelectById(id);
                 if (order == null)
                 {
                     return HttpNotFound();
@@ -151,31 +152,6 @@ namespace Alithea2.Controllers
 
             return View(order);
         }
-
-//        // GET: Orders/Create
-//        public ActionResult Create()
-//        {
-//            ViewBag.UserID = new SelectList(db.UserAccounts, "UserID", "RoleNumber");
-//            return View();
-//        }
-//
-//        // POST: Orders/Create
-//        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-//        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Create([Bind(Include = "OrderID,RoleNumber,OrderDate,RequireDate,ShippedDate,Quantity,TotalPrice,Commnet,UserID,FullName,Address,Phone,Email,Status")] Order order)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                db.Orders.Add(order);
-//                db.SaveChanges();
-//                return RedirectToAction("Index");
-//            }
-//
-//            ViewBag.UserID = new SelectList(db.UserAccounts, "UserID", "RoleNumber", order.UserID);
-//            return View(order);
-//        }
 
         // GET: Orders/Edit/5
         public ActionResult Edit(int? id)
